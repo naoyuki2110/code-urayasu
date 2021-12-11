@@ -30,6 +30,7 @@ client.on("messageCreate", async msg => {
       .addField("サーバー参加日時", `<t:${msg.guild.joinedTimestamp}>`, true)
     console.log(msg.author.avatarURL({format:"png"}));
     msg.channel.send({embeds:[embed]});
+    console.log(msg.guild.joinedTimestamp)
   }
 })
 
