@@ -63,6 +63,25 @@ client.on("messageCreate", async msg => {
 })
 
 client.on("messageCreate", async msg => {
+  if (msg.content === "fm!exit") {
+    if(!msg.author.id === "524872647042007067"){
+      const embed = new Discord.MessageEmbed()
+        .setAuthor("エラー", "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96")
+        .setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ](https://discord.gg/VvrBsaq)！")
+        .addField("エラーコード", "FOR_BIDDEN", true)
+      msg.channel.send({embeds:[embed]});
+    }
+    else if(msg.author.id === "524872647042007067"){
+      const embed2 = new Discord.MessageEmbed()
+        .setAuthor("プロセス終了", "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96")
+        .setDescription(`${client.user.tag}のプロセスを終了します。`)
+      msg.channel.send({embeds:[embed2]});
+      process.exit();
+    }
+  }
+})
+
+client.on("messageCreate", async msg => {
   if (msg.content.startsWith(prefix)) {
   try{
     const args = msg.content.trim().split(/ +/g);
