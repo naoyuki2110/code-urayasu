@@ -1,14 +1,20 @@
-const Discord = require("discord.js")
-const client = new Discord.Client({intents: Object.keys(Discord.Intents.FLAGS)})
+// Discordフレームワーク読み込み
+const Discord = require("discord.js");
+const client = new Discord.Client({intents: Object.keys(Discord.Intents.FLAGS)});
+
+// dotenv読み込み
+require("dotenv").config();
+
+// BOTプレフィックス宣言
 const prefix = "fm!";
 
 client.on("ready", () => {
-  console.log(`ユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`)
+  console.log(`ユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
 })
 
 client.on("messageCreate", async msg => {
   if (msg.content === "fm!ping") {
-    msg.channel.send("Oreno PongPong!\nNightPool PashaPasha!")
+    msg.channel.send("Oreno PongPong!\nNightPool PashaPasha!");
   }
 })
 
@@ -22,7 +28,7 @@ client.on("messageCreate", async msg => {
       .addField("ユーザータグ", msg.author.discriminator, true)
       .addField("ユーザーID", `${msg.author.id}`, true)
       .addField("サーバー参加日時", `<t:${msg.guild.joinedTimestamp}>`, true)
-    console.log(msg.author.avatarURL({format:"png"}))
+    console.log(msg.author.avatarURL({format:"png"}));
     msg.channel.send({embeds:[embed]});
   }
 })
@@ -36,7 +42,7 @@ client.on("messageCreate", async msg => {
       .addField("サーバー名", msg.guild.name, true)
       .addField("サーバーID", msg.guild.id, true)
       .addField("メンバー数", `${msg.guild.memberCount}`, true)
-    console.log(msg.author.avatarURL({format:"png"}))
+    console.log(msg.author.avatarURL({format:"png"}));
     msg.channel.send({embeds:[embed]});
   }
 })
@@ -50,7 +56,7 @@ client.on("messageCreate", async msg => {
       .addField("チャンネルID", msg.channel.id, true)
       .addField("メッセージ数", `${msg.channel.messageCount}`, true)
       .addField("トピック", `${msg.channel.topic}`, true)
-    console.log(msg.author.avatarURL({format:"png"}))
+    console.log(msg.author.avatarURL({format:"png"}));
     msg.channel.send({embeds:[embed]});
   }
 })
@@ -99,4 +105,4 @@ client.on("interactionCreate", async (inter) => {
   }
 });
 
-client.login("TOKEN") 
+client.login(process.env.BOT_TOKEN) 
