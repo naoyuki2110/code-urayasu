@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/naoyuki2110/code-urayasu/issues"
   },
-  "homepage": "https://github.com/naoyuki2110/code-urayasu#readme"
+  "homepage": "https://github.com/naoyuki2110/code-urayasu#readme",
+  "engines": {
+    "node": "17.2.0",
+    "npm": "8.1.4"
+  }
 }
