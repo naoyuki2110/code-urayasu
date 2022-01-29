@@ -33,6 +33,17 @@ client.on("ready", async () => {
   console.log(`すべてのスラッシュコマンドを作成しました。`);
 })
 
+// Auto ThreadChannelJoin
+client.on("threadCreate", (thre) => {
+  console.log(`スレッドチャンネルの作成\nサーバー : ${thre.guild.name} / ${thre.guild.id}\nチャンネル : ${thre.name} / ${thre.id}`)
+  if (!thre) {
+    return
+  }
+  else {
+    thre.join();
+  }
+});
+
 client.on("messageCreate", async msg => {
   if (msg.content === "fm!ping") {
     msg.channel.send("Oreno PongPong!\nNightPool PashaPasha!");
@@ -232,10 +243,10 @@ client.on("guildScheduledEventCreate", (event) => {
     let enttype = "他の場所";
     let desipt = "ここに説明文が入る";
     if (event.entityType === "VOICE") {
-      enttype = `<#${event.channel.id}> / ボイスCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ボイスCH`;
     }
     else if (event.entityType === "STAGE_INSTANCE") {
-      enttype = `<#${event.channel.id}> / ステージCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ステージCH`;
     }
     else if (event.entityType === "EXTERNAL") {
       enttype = `${event.entityMetadata.location} / 他の場所`;
@@ -243,10 +254,10 @@ client.on("guildScheduledEventCreate", (event) => {
     else if (event.entityType === "NONE") {
       enttype = "なし";
     }
-    if(event.description.length <= 20){
+    if (event.description.length <= 20) {
       desipt = `${event.description}`;
     }
-    else if(event.description.length > 20){
+    else if (event.description.length > 20) {
       desipt = `${event.description.substring(0, 20)}...`;
     }
     const date = new Date(event.scheduledStartTimestamp);
@@ -260,9 +271,9 @@ client.on("guildScheduledEventCreate", (event) => {
       .setColor("#3CC761")
       .addField("イベント名", `${event.name} / ${event.id}`, true)
       .addField("説明", `${desipt}`, true)
-      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`, true)
-      .addField("どこで行われる？", enttype, true)
-      .addField("開始日時", datestr)
+      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`)
+      .addField("どこで行われる？", enttype)
+      .addField("開始日時", datestr, true)
       .addField("終了日時", datestr2, true)
       .setTimestamp()
     event.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
@@ -276,10 +287,10 @@ client.on("guildScheduledEventDelete", (event) => {
     let enttype = "他の場所";
     let desipt = "ここに説明文が入る";
     if (event.entityType === "VOICE") {
-      enttype = `<#${event.channel.id}> / ボイスCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ボイスCH`;
     }
     else if (event.entityType === "STAGE_INSTANCE") {
-      enttype = `<#${event.channel.id}> / ステージCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ステージCH`;
     }
     else if (event.entityType === "EXTERNAL") {
       enttype = `${event.entityMetadata.location} / 他の場所`;
@@ -287,10 +298,10 @@ client.on("guildScheduledEventDelete", (event) => {
     else if (event.entityType === "NONE") {
       enttype = "なし";
     }
-    if(event.description.length <= 20){
+    if (event.description.length <= 20) {
       desipt = `${event.description}`;
     }
-    else if(event.description.length > 20){
+    else if (event.description.length > 20) {
       desipt = `${event.description.substring(0, 20)}...`;
     }
     const date = new Date(event.scheduledStartTimestamp);
@@ -304,9 +315,9 @@ client.on("guildScheduledEventDelete", (event) => {
       .setColor("#EB3871")
       .addField("イベント名", `${event.name} / ${event.id}`, true)
       .addField("説明", `${desipt}`, true)
-      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`, true)
-      .addField("どこで行われる？", enttype, true)
-      .addField("開始日時", datestr)
+      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`)
+      .addField("どこで行われる？", enttype)
+      .addField("開始日時", datestr, true)
       .addField("終了日時", datestr2, true)
       .setTimestamp()
     event.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
@@ -320,10 +331,10 @@ client.on("guildScheduledEventUpdate", (oldevent, event) => {
     let enttype = "他の場所";
     let desipt = "ここに説明文が入る";
     if (event.entityType === "VOICE") {
-      enttype = `<#${event.channel.id}> / ボイスCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ボイスCH`;
     }
     else if (event.entityType === "STAGE_INSTANCE") {
-      enttype = `<#${event.channel.id}> / ステージCH`;
+      enttype = `<#${event.channel.id}> / ${event.channel.id}\n#${event.channel.name} / ステージCH`;
     }
     else if (event.entityType === "EXTERNAL") {
       enttype = `${event.entityMetadata.location} / 他の場所`;
@@ -331,10 +342,10 @@ client.on("guildScheduledEventUpdate", (oldevent, event) => {
     else if (event.entityType === "NONE") {
       enttype = "なし";
     }
-    if(event.description.length <= 20){
+    if (event.description.length <= 20) {
       desipt = `${event.description}`;
     }
-    else if(event.description.length > 20){
+    else if (event.description.length > 20) {
       desipt = `${event.description.substring(0, 20)}...`;
     }
     const date = new Date(event.scheduledStartTimestamp);
@@ -348,9 +359,9 @@ client.on("guildScheduledEventUpdate", (oldevent, event) => {
       .setColor("#08B1FF")
       .addField("イベント名", `${event.name} / ${event.id}`, true)
       .addField("説明", `${desipt}`, true)
-      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`, true)
-      .addField("どこで行われる？", enttype, true)
-      .addField("開始日時", datestr)
+      .addField("作成者", `${event.creator.tag} / ${event.creator.id}`)
+      .addField("どこで行われる？", enttype)
+      .addField("開始日時", datestr, true)
       .addField("終了日時", datestr2, true)
       .setTimestamp()
     event.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
@@ -358,4 +369,89 @@ client.on("guildScheduledEventUpdate", (oldevent, event) => {
   }
 });
 
-client.login(process.env.BOT_TOKEN) 
+// Message Logs
+client.on("messageDelete", (msg) => {
+  console.log(`メッセージの削除\nサーバー : ${msg.guild.name}`)
+  if (msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")) {
+    if (msg.type === "DEFAULT" || msg.type === "REPLY") {
+      let atch = "なし";
+      let msgcont = "メッセージ";
+      if(!msg.attachments.first()){
+        atch = "なし";
+      }
+      else if(msg.attachments.first()){
+        atch = `${msg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
+      }
+      if(msg.content === ""){
+        msgcont = "なし";
+      }
+      else if(msg.content !== ""){
+        msgcont = `${msg.content}`;
+      }
+      const embed = new Discord.MessageEmbed()
+        .setTitle(`メッセージの削除`)
+        // .setAuthor({name:`${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format:"png" })})
+        // .setDescription(`${event.creator.username}\n\n---------------\n[Jump to message](${reaction.message.url})`)
+        .setColor("#EB3871")
+        .addField("内容", msgcont)
+        .addField("添付ファイル", atch)
+        .addField("チャンネル", `<#${msg.channel.id}> / ${msg.channel.id}\n#${msg.channel.name}`)
+        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n${msg.author.tag}`, true)
+        .setTimestamp()
+      msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
+        .send({ embeds: [embed] });
+    }
+  }
+});
+
+client.on("messageUpdate", (oldmsg, msg) => {
+  console.log(`メッセージの編集\nサーバー : ${msg.guild.name}`)
+  if (msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")) {
+    if (msg.type === "DEFAULT" || msg.type === "REPLY") {
+      let atch = "なし";
+      let msgcont = "メッセージ";
+      let atch2 = "なし";
+      let msgcont2 = "メッセージ";
+      if(!msg.attachments.first()){
+        atch = "なし";
+      }
+      else if(msg.attachments.first()){
+        atch = `${msg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
+      }
+      if(msg.content === ""){
+        msgcont = "なし";
+      }
+      else if(msg.content !== ""){
+        msgcont = `${msg.content}`;
+      }
+      if(!oldmsg.attachments.first()){
+        atch2 = "なし";
+      }
+      else if(oldmsg.attachments.first()){
+        atch2 = `${oldmsg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
+      }
+      if(oldmsg.content === ""){
+        msgcont2 = "なし";
+      }
+      else if(oldmsg.content !== ""){
+        msgcont2 = `${oldmsg.content}`;
+      }
+      const embed = new Discord.MessageEmbed()
+        .setTitle(`メッセージの編集`)
+        // .setAuthor({name:`${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format:"png" })})
+        .setDescription(`このメッセージに[ジャンプ](${msg.url})`)
+        .setColor("#08B1FF")
+        .addField("内容（変更前）", msgcont2)
+        .addField("内容（変更後）", msgcont)
+        .addField("添付ファイル（変更前）", atch2)
+        .addField("添付ファイル（変更後）", atch)
+        .addField("チャンネル", `<#${msg.channel.id}> / ${msg.channel.id}\n#${msg.channel.name}`)
+        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n${msg.author.tag}`, true)
+        .setTimestamp()
+      msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
+        .send({ embeds: [embed] });
+    }
+  }
+});
+
+client.login(process.env.BOT_TOKEN)
