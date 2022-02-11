@@ -29,8 +29,13 @@ client.on("ready", async () => {
     name: "channel",
     description: "チャンネルの情報を表示します",
   };
-  await client.application.commands.set([usshdata, svshdata, chshdata]);
-  console.log(`すべてのスラッシュコマンドを作成しました。`);
+  const uscmdata = {
+    type: "USER",
+    name: "userinfo",
+    description: "",
+  };
+  await client.application.commands.set([usshdata, svshdata, chshdata, uscmdata]);
+  console.log(`すべてのアプリケーションコマンドを作成しました。`);
 })
 
 // Auto ThreadChannelJoin
@@ -211,6 +216,22 @@ client.on("interactionCreate", async (inter) => {
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
   }
+  else if (inter.commandName === "userinfo") {
+    const date = new Date(inter.targetUser.createdTimestamp);
+    const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+    const jndate = new Date(inter.targetMember.joinedTimestamp);
+    const jndatestr = jndate.toFormat("YYYY/MM/DD HH24:MI:SS");
+    const embed = new Discord.MessageEmbed()
+      .setTitle("ユーザー情報")
+      .setThumbnail(inter.targetUser.displayAvatarURL({ format: "png" }))
+      .setFooter({ text: `${datestr}にアカウントが作成されました。` })
+      .addField("ユーザー名", inter.targetUser.username, true)
+      .addField("ユーザータグ", inter.targetUser.discriminator, true)
+      .addField("ユーザーID", `${inter.targetUser.id}`, true)
+      .addField("サーバー参加日時", `${jndatestr}`, true)
+      .setColor("#05E2FF")
+    await inter.reply({ embeds: [embed], ephemeral: false });
+  }
 });
 
 // ThinkingBoard
@@ -376,16 +397,16 @@ client.on("messageDelete", (msg) => {
     if (msg.type === "DEFAULT" || msg.type === "REPLY") {
       let atch = "なし";
       let msgcont = "メッセージ";
-      if(!msg.attachments.first()){
+      if (!msg.attachments.first()) {
         atch = "なし";
       }
-      else if(msg.attachments.first()){
+      else if (msg.attachments.first()) {
         atch = `${msg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
       }
-      if(msg.content === ""){
+      if (msg.content === "") {
         msgcont = "なし";
       }
-      else if(msg.content !== ""){
+      else if (msg.content !== "") {
         msgcont = `${msg.content}`;
       }
       const embed = new Discord.MessageEmbed()
@@ -396,7 +417,7 @@ client.on("messageDelete", (msg) => {
         .addField("内容", msgcont)
         .addField("添付ファイル", atch)
         .addField("チャンネル", `<#${msg.channel.id}> / ${msg.channel.id}\n#${msg.channel.name}`)
-        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n${msg.author.tag}`, true)
+        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n@${msg.member.displayName}#${msg.author.discriminator}`, true)
         .setTimestamp()
       msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
         .send({ embeds: [embed] });
@@ -412,28 +433,28 @@ client.on("messageUpdate", (oldmsg, msg) => {
       let msgcont = "メッセージ";
       let atch2 = "なし";
       let msgcont2 = "メッセージ";
-      if(!msg.attachments.first()){
+      if (!msg.attachments.first()) {
         atch = "なし";
       }
-      else if(msg.attachments.first()){
+      else if (msg.attachments.first()) {
         atch = `${msg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
       }
-      if(msg.content === ""){
+      if (msg.content === "") {
         msgcont = "なし";
       }
-      else if(msg.content !== ""){
+      else if (msg.content !== "") {
         msgcont = `${msg.content}`;
       }
-      if(!oldmsg.attachments.first()){
+      if (!oldmsg.attachments.first()) {
         atch2 = "なし";
       }
-      else if(oldmsg.attachments.first()){
+      else if (oldmsg.attachments.first()) {
         atch2 = `${oldmsg.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
       }
-      if(oldmsg.content === ""){
+      if (oldmsg.content === "") {
         msgcont2 = "なし";
       }
-      else if(oldmsg.content !== ""){
+      else if (oldmsg.content !== "") {
         msgcont2 = `${oldmsg.content}`;
       }
       const embed = new Discord.MessageEmbed()
@@ -446,9 +467,44 @@ client.on("messageUpdate", (oldmsg, msg) => {
         .addField("添付ファイル（変更前）", atch2)
         .addField("添付ファイル（変更後）", atch)
         .addField("チャンネル", `<#${msg.channel.id}> / ${msg.channel.id}\n#${msg.channel.name}`)
-        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n${msg.author.tag}`, true)
+        .addField("投稿者", `<@${msg.author.id}> / ${msg.author.id}\n@${msg.member.displayName}#${msg.author.discriminator}`, true)
         .setTimestamp()
       msg.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
+        .send({ embeds: [embed] });
+    }
+  }
+});
+// GuildMember Logs
+// GuildMember Timeout Log
+client.on("guildMemberUpdate", (oldmbr, mbr) => {
+  if (mbr.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")) {
+    if (!oldmbr.isCommunicationDisabled() && mbr.isCommunicationDisabled()) {
+      const nowdate = new Date();
+      const date = new Date(mbr.communicationDisabledUntilTimestamp);
+      const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+      const timeoutmlSec = date - nowdate;
+      const timeoutDay = parseInt(timeoutmlSec / 1000 / 60 / 60 / 24);
+      const timeoutHour = parseInt(timeoutmlSec / 1000 / 60 / 60);
+      const timeoutMin = parseInt(timeoutmlSec / 1000 / 60);
+      const timeoutSec = parseInt(timeoutmlSec / 1000);
+      const embed = new Discord.MessageEmbed()
+        .setTitle(`メンバーのタイムアウト`)
+        // .setAuthor({name:`${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format:"png" })})
+        .setColor("#08B1FF")
+        .addField("ターゲット", `<@${mbr.id}> / ${mbr.id}\n@${mbr.displayName}#${mbr.user.discriminator}`)
+        .addField("期間", `${datestr} / ${timeoutDay}日${timeoutHour}時間${timeoutMin}分${timeoutSec}秒`)
+        .setTimestamp()
+      mbr.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
+        .send({ embeds: [embed] });
+    }
+    else if (oldmbr.isCommunicationDisabled() && !mbr.isCommunicationDisabled()) {
+      const embed = new Discord.MessageEmbed()
+        .setTitle(`メンバーのタイムアウトの解除`)
+        // .setAuthor({name:`${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format:"png" })})
+        .setColor("#08B1FF")
+        .addField("ターゲット", `<@${mbr.id}> / ${mbr.id}\n@${mbr.displayName}#${mbr.user.discriminator}`)
+        .setTimestamp()
+      mbr.guild.channels.cache.find((channel) => channel.name === "cu-audit-logs")
         .send({ embeds: [embed] });
     }
   }
