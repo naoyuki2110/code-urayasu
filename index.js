@@ -130,6 +130,222 @@ client.on("messageCreate", async msg => {
 })
 
 client.on("messageCreate", async msg => {
+  if (msg.content === "!myriad2") {
+    const now = new Date();
+    const datestr = now.toFormat("YYYY/MM/DD HH24:MI:SS");
+    const myrtime = new Date();
+    const myrtime2 = new Date();
+    let gametype = "JPゲーム";
+    let doniti = false;
+    //now.setDate(24)
+    //now.setHours(21);
+    //now.setMinutes(30);
+    //now.setSeconds(1);
+    if(now.getDay() == 1){
+      myrtime.setHours(20);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(18);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "レース";
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "JPゲーム";
+        console.log(datestr);
+      }
+    }
+    else if(now.getDay() == 2){
+      myrtime.setHours(18);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(21);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "JPゲーム";
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+        gametype = "レース";
+      }
+    }
+    else if(now.getDay() == 3){
+      myrtime.setHours(21);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(20);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "レース";
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "JPゲーム";
+        console.log(datestr);
+      }
+    }
+    else if(now.getDay() == 4){
+      myrtime.setHours(20);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(22);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "JPゲーム";
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "レース";
+        console.log(datestr);
+      }
+    }
+    else if(now.getDay() == 5){
+      //myrtime.setDate(now.getDate());
+      myrtime.setHours(22);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        doniti = true;
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(20);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        myrtime2.setDate(now.getDate()+1);
+        myrtime2.setHours(20);
+        myrtime2.setMinutes(30);
+        myrtime2.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        gametype = "JPゲーム";
+        console.log(datestr);
+      }
+    }
+    else if(now.getDay() == 6){
+      //myrtime.setDate(now.getDate());
+      //myrtime2.setDate(now.getDate());
+      myrtime.setHours(20);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      myrtime2.setHours(20);
+      myrtime2.setMinutes(30);
+      myrtime2.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        doniti = true;
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(21);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+      }
+      if(now.getTime() >= myrtime2.getTime()){
+        console.log("過ぎてる");
+        doniti = true;
+        myrtime2.setDate(now.getDate()+1);
+        myrtime2.setHours(21);
+        myrtime2.setMinutes(30);
+        myrtime2.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        doniti = true;
+        console.log(datestr);
+      }
+    }
+    else if(now.getDay() == 0){
+      //myrtime.setDate(now.getDate());
+      //myrtime2.setDate(now.getDate());
+      myrtime.setHours(21);
+      myrtime.setMinutes(0);
+      myrtime.setSeconds(0);
+      myrtime2.setHours(21);
+      myrtime2.setMinutes(30);
+      myrtime2.setSeconds(0);
+      //now.setHours(20);
+      //now.setMinutes(0);
+      //now.setSeconds(0);
+      if(now.getTime() >= myrtime.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(20);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+      }
+      if(now.getTime() >= myrtime2.getTime()){
+        console.log("過ぎてる");
+        myrtime.setDate(now.getDate()+1);
+        myrtime.setHours(20);
+        myrtime.setMinutes(0);
+        myrtime.setSeconds(0);
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        console.log(datestr);
+      }
+      else{
+        const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
+        doniti = true;
+        console.log(datestr);
+      }
+    }
+    if(!doniti){
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアド${gametype}が開催されます。\n\n開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒です。`);
+    }
+    else{
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアドJPゲーム、\n${myrtime2.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアドレースが開催されます。\n\nミリアドJPゲーム開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒、\nミリアドレース開催まであと${Math.floor((myrtime2.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 60)}秒です。`);
+    }
+  //  await msg.channel.send(`次回は${now}`);
+  }
+})
+
+client.on("messageCreate", async msg => {
   if (msg.content.startsWith(prefix)) {
     try {
       const args = msg.content.trim().split(/ +/g);
