@@ -953,8 +953,8 @@ client.on("messageCreate", async message => {
 client.on("messageCreate", async message => {
   if (message.content.startsWith(prefix + "numgame")) {
     const skipstr = prefix + "numgame";
-    numgamemax = message.content.substring(skipstr.length, message.content.length);
     if (!numgameplaying) {
+      numgamemax = message.content.substring(skipstr.length, message.content.length);
       if (!isNaN(numgamemax)) {
         if (parseInt(numgamemax) >= 1 && parseInt(numgamemax) <= 400) {
           numgameplaying = true;
