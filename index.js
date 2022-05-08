@@ -8,11 +8,13 @@ require("dotenv").config();
 // Date読み込み
 require("date-utils");
 
+const { setTimeout } = require("timers/promises")
+
 // BOTプレフィックス宣言
-const prefix = "fm!";
+const prefix = "cu!";
 
 client.on("ready", () => {
-  console.log(`ユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
+  console.log(`${new Date()}\nユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
   client.user.setActivity("只今メンテナンス中です。動作が不安定になることがあります。", { type: "COMPETING" })
 })
 
@@ -48,15 +50,16 @@ client.on("threadCreate", (thre) => {
     thre.join();
   }
 });
-
+/*
 client.on("messageCreate", async msg => {
-  if (msg.content === "fm!ping") {
+  if (msg.content === "cu!ping") {
     msg.channel.send("Oreno PongPong!\nNightPool PashaPasha!");
   }
 })
+*/
 
 client.on("messageCreate", async msg => {
-  if (msg.content === "fm!user") {
+  if (msg.content === "cu!user") {
     const date = new Date(msg.author.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const jndate = new Date(msg.member.joinedTimestamp);
@@ -76,7 +79,7 @@ client.on("messageCreate", async msg => {
 })
 
 client.on("messageCreate", async msg => {
-  if (msg.content === "fm!server") {
+  if (msg.content === "cu!server") {
     const date = new Date(msg.guild.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const embed = new Discord.MessageEmbed()
@@ -93,7 +96,7 @@ client.on("messageCreate", async msg => {
 })
 
 client.on("messageCreate", async msg => {
-  if (msg.content === "fm!channel") {
+  if (msg.content === "cu!channel") {
     const date = new Date(msg.channel.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const embed = new Discord.MessageEmbed()
@@ -109,8 +112,9 @@ client.on("messageCreate", async msg => {
   }
 })
 
+/*
 client.on("messageCreate", async msg => {
-  if (msg.content === "fm!exit") {
+  if (msg.content === "!exit") {
     const embed = new Discord.MessageEmbed()
     if (msg.author.id !== "524872647042007067") {
       embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
@@ -128,6 +132,7 @@ client.on("messageCreate", async msg => {
     }
   }
 })
+*/
 
 client.on("messageCreate", async msg => {
   if (msg.content === "!myriad2") {
@@ -336,10 +341,10 @@ client.on("messageCreate", async msg => {
       }
     }
     if(!doniti){
-      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアド${gametype}が開催されます。\n\n開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒です。`);
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアド${gametype}が開催されます。\n\n開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒です。`);
     }
     else{
-      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアドJPゲーム、\n${myrtime2.toFormat("YYYY年MM月DD日 HH24時MI分")}にミリアドレースが開催されます。\n\nミリアドJPゲーム開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒、\nミリアドレース開催まであと${Math.floor((myrtime2.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 60)}秒です。`);
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドJPゲーム、\n${myrtime2.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドレースが開催されます。\n\nミリアドJPゲーム開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒、\nミリアドレース開催まであと${Math.floor((myrtime2.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 60)}秒です。`);
     }
   //  await msg.channel.send(`次回は${now}`);
   }
@@ -725,5 +730,285 @@ client.on("guildMemberUpdate", (oldmbr, mbr) => {
     }
   }
 });
+
+client.on("messageCreate", async msg => {
+  var sendtime = Date.now();
+  if (msg.content === "cu!ping") {
+    var message = msg.channel.send("Pong!");
+    var pongtime = Date.now();
+    await setTimeout(1000);
+    (await message).edit(`Pong!\n\nResponse : ${Date.now() - msg.createdTimestamp}ms\nWebSocket : ${client.ws.ping}ms`)
+  }
+})
+
+client.on("messageCreate", async msg => {
+  if (msg.content === "cu!exit") {
+    const embed = new Discord.MessageEmbed()
+    if (msg.author.id !== "524872647042007067") {
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+    else if (msg.author.id === "524872647042007067") {
+      embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
+      embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
+      embed.setColor("#08B1FF")
+      await msg.channel.send({ embeds: [embed] });
+      process.exit();
+    }
+  }
+})
+
+client.on("messageCreate", async msg => {
+  var sendtime = Date.now();
+  if (msg.content.startsWith(prefix)) {
+    try {
+      const args = msg.content.trim().split(/ +/g);
+      const cmd = args[0].slice(prefix.length);
+      if (cmd === "rdsay") {
+        if (args[1]) {
+          let ct = 0;
+          let rdmsg = "";
+          while (ct < args[1].length) {
+            var v1 = Math.floor(Math.random() * args[1].length);
+            rdmsg += args[1][v1];
+            ct += 1;
+          }
+          await msg.channel.send(`${rdmsg}`);
+        }
+        else {
+          const rderrmsg = Math.ceil(Math.random() * 5);
+          if (rderrmsg == 1) {
+            await msg.reply("喋らせる言葉を引数に加えてください！！！！！！！！！！(´･_･`)");
+          }
+          else {
+            await msg.reply("喋らせる言葉を引数に加えてください。");
+          }
+        }
+      }
+    }
+    catch (error) {
+      if (error.name !== "") {
+        console.log(`${error.name} : ${error.message}`);
+      }
+    }
+  }
+})
+
+let slot1 = "";
+let slot2 = "";
+let slot3 = "";
+let playing = false;
+
+client.on("messageCreate", async message => {
+  if (message.content === "cu!slot") {
+    if (!playing) {
+      playing = true;
+      slot1 = SlotEmoji();
+      slot2 = SlotEmoji();
+      slot3 = SlotEmoji();
+      SlotSpEmoji();
+      var msg = message.channel.send("SLOT START!");
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      (await msg).edit(`${slot1} :black_large_square: :black_large_square: `);
+      await setTimeout(1000);
+      (await msg).edit(`${slot1} :black_large_square: ${slot3} `);
+      if (slot1 == slot3) {
+        message.channel.send("REACH!!");
+        await setTimeout(2000);
+      }
+      await setTimeout(1500);
+      (await msg).edit(`${slot1} ${slot2} ${slot3} `);
+      if (slot1 == slot2 && slot2 == slot3) {
+        message.channel.send("**W I N !!!**");
+      }
+      else {
+        message.channel.send("Play Again!");
+      }
+      if (slot1 == ":three:" && slot2 == ":three:" && slot3 == ":four:") {
+        message.channel.send("なんでや！");
+      }
+      else if (slot1 == ":five:" && slot2 == ":one:" && slot3 == ":three:") {
+        message.channel.send("あと「9」があればなぁ...");
+      }
+      else if (slot1 == "<:Cry:704139077162762280>" || slot2 == "<:Cry:704139077162762280>" || slot3 == "<:Cry:704139077162762280>") {
+        message.channel.send("変なの出てて草");
+      }
+      playing = false;
+    }
+    else {
+      message.channel.send("現在別のところでスロットが行われているため実行できません。\nしばらくしてからもう一度お試しください。");
+    }
+  }
+})
+
+function SlotEmoji() {
+  const rdslot = Math.ceil(Math.random() * 9);
+  if (rdslot == 1) {
+    return ":one:";
+  }
+  else if (rdslot == 2) {
+    return ":two:";
+  }
+  else if (rdslot == 3) {
+    return ":three:";
+  }
+  else if (rdslot == 4) {
+    return ":four:";
+  }
+  else if (rdslot == 5) {
+    return ":five:";
+  }
+  else if (rdslot == 6) {
+    return ":six:";
+  }
+  else if (rdslot == 7) {
+    return ":seven:";
+  }
+  else if (rdslot == 8) {
+    return ":eight:";
+  }
+  else if (rdslot == 9) {
+    return ":nine:";
+  }
+}
+
+function SlotSpEmoji() {
+  const rdslot = Math.ceil(Math.random() * 40);
+  if (rdslot == 40) {
+    const rdslot2 = Math.ceil(Math.random() * 3);
+    if (rdslot2 == 1) {
+      slot1 = "<:Cry:704139077162762280>";
+    }
+    else if (rdslot2 == 2) {
+      slot2 = "<:Cry:704139077162762280>";
+    }
+    else if (rdslot2 == 3) {
+      slot3 = "<:Cry:704139077162762280>";
+    }
+  }
+  else {
+    return;
+  }
+}
+
+let numgameplaying = false;
+let numgamech = 0;
+let numgameuser = 0;
+let numgameres = 0;
+let numgamecount = 0;
+let numgametype = "100";
+let numgamemax = "100";
+
+client.on("messageCreate", async message => {
+  if (message.content === "cu!num100") {
+    if (!numgameplaying) {
+      numgameplaying = true;
+      message.channel.send("1～100までの数字を予想してください。");
+      numgamech = message.channelId;
+      numgameuser = message.author.id;
+      numgameres = Math.ceil(Math.random() * 100);
+      numgametype = "100";
+    }
+    else {
+      message.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
+    }
+  }
+  if (message.author.id == numgameuser && message.channelId == numgamech && numgameplaying && numgametype == "100") {
+    if (!isNaN(message.content.trim())) {
+      if (parseInt(message.content.trim()) >= 1 && parseInt(message.content.trim()) <= 100) {
+        if (numgameres < parseInt(message.content.trim())) {
+          message.reply(`不正解！\n「${message.content.trim()}」より小さいです。`);
+          numgamecount++;
+        }
+        else if (numgameres > parseInt(message.content.trim())) {
+          message.reply(`不正解！\n「${message.content.trim()}」より大きいです。`);
+          numgamecount++;
+        }
+        else if (numgameres == parseInt(message.content.trim())) {
+          numgamecount++;
+          message.reply(`正解！！\n正解は「${numgameres}」でした！\n${message.member.displayName}さんの挑戦数 : ${numgamecount}回`);
+          numgameplaying = false;
+          numgamech = 0;
+          numgameuser = 0;
+          numgameres = 0;
+          numgamecount = 0;
+        }
+      }
+      else {
+        message.reply(`範囲外です。\n1～100までを入力してください。`);
+      }
+    }
+    else {
+      if (!message.content.startsWith(prefix)) {
+        message.reply(`数字を入力してください。`);
+      }
+    }
+  }
+})
+
+client.on("messageCreate", async message => {
+  if (message.content.startsWith(prefix + "numgame")) {
+    const skipstr = prefix + "numgame";
+    numgamemax = message.content.substring(skipstr.length, message.content.length);
+    if (!numgameplaying) {
+      if (!isNaN(numgamemax)) {
+        if (parseInt(numgamemax) >= 1 && parseInt(numgamemax) <= 400) {
+          numgameplaying = true;
+          message.channel.send(`1～${numgamemax}までの数字を予想してください。`);
+          numgamech = message.channelId;
+          numgameuser = message.author.id;
+          numgameres = Math.ceil(Math.random() * parseInt(numgamemax));
+          numgametype = "custom";
+        }
+        else{
+          message.reply("カスタムナンバーゲームの作成に失敗しました。\n指定範囲は1～400にしてください。");
+        }
+      }
+      else {
+        message.reply("カスタムナンバーゲームの作成に失敗しました。\n\`rs!numgame\`に続く文字列を数字にしてください。");
+      }
+    }
+    else {
+      message.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
+    }
+  }
+  if (message.author.id == numgameuser && message.channelId == numgamech && numgameplaying && numgametype == "custom") {
+    const skipstr = prefix + "numgame";
+    //const numstr = message.content.substring(skipstr.length, message.content.length);
+    if (!isNaN(message.content.trim())) {
+      if (parseInt(message.content.trim()) >= 1 && parseInt(message.content.trim()) <= parseInt(numgamemax)) {
+        if (numgameres < parseInt(message.content.trim())) {
+          message.reply(`不正解！\n「${message.content.trim()}」より小さいです。`);
+          numgamecount++;
+        }
+        else if (numgameres > parseInt(message.content.trim())) {
+          message.reply(`不正解！\n「${message.content.trim()}」より大きいです。`);
+          numgamecount++;
+        }
+        else if (numgameres == parseInt(message.content.trim())) {
+          numgamecount++;
+          message.reply(`正解！！\n正解は「${numgameres}」でした！\n${message.member.displayName}さんの挑戦数 : ${numgamecount}回`);
+          numgameplaying = false;
+          numgamech = 0;
+          numgameuser = 0;
+          numgameres = 0;
+          numgamecount = 0;
+        }
+      }
+      else {
+        message.reply(`範囲外です。\n1～${numgamemax}までを入力してください。`);
+      }
+    }
+    else {
+      if (!message.content.startsWith(prefix)) {
+        message.reply(`数字を入力してください。`);
+      }
+    }
+  }
+})
 
 client.login(process.env.BOT_TOKEN)
