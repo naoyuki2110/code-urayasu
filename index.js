@@ -59,6 +59,30 @@ client.on("messageCreate", async msg => {
 */
 
 client.on("messageCreate", async msg => {
+  if (msg.content === "cu!help") {
+    msg.channel.send(`Code-Urayasuの使い方
+Prefixは \`cu!\`
+
+コマンド編
+\`cu!num100\` : 1～100までの数字あてゲームがプレイできます。
+\`cu!numgame<1~400までの数字>\` : numgameのあとの数字分数字あてゲームがプレイできます。
+\`!myriad2\` : PNR2の次回のミリアド時刻・相対時刻を表示します
+\`cu!rdsay\` <文字列> : 指定した文字列をランダムに並べ替えて表示します
+\`cu!user\` : ユーザー情報を表示します
+\`cu!server\` : サーバー情報を表示します
+\`cu!channel\` : チャンネル情報を表示します
+\`cu!ping\` : 通信速度を表示します
+\`cu!slot\` : 3リールスロットを実行します
+
+その他
+\`cu-thinking-board\` というチャンネルを作成すると、サーバー内でシンキングリアクションがされたときにそのチャンネルでボードが表示されます。
+\`cu-audit-logs\` というチャンネルを作成すると、サーバー内で何か行動をしたときに監査ログとしてそのチャンネルにメッセージが送信されます。
+
+お問い合わせは <@524872647042007067>まで。`);
+  }
+})
+
+client.on("messageCreate", async msg => {
   if (msg.content === "cu!user") {
     const date = new Date(msg.author.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
