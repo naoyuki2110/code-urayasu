@@ -13,6 +13,22 @@ const { setTimeout } = require("timers/promises")
 // BOTプレフィックス宣言
 const prefix = "cu!";
 
+// 必要変数
+let slot1 = "";
+let slot2 = "";
+let slot3 = "";
+let playing = false;
+
+let numgameplaying = false;
+let numgamech = 0;
+let numgameuser = 0;
+let numgameres = 0;
+let numgamecount = 0;
+let numgametype = "100";
+let numgamemax = "100";
+
+let coinstock = 1000;
+
 client.on("ready", () => {
   console.log(`${new Date()}\nユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
   client.user.setActivity("只今メンテナンス中です。動作が不安定になることがあります。", { type: "COMPETING" })
@@ -80,9 +96,7 @@ Prefixは \`cu!\`
 
 お問い合わせは naoyuki#5883 まで。`);
   }
-})
 
-client.on("messageCreate", async msg => {
   if (msg.content === "cu!user") {
     const date = new Date(msg.author.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -100,9 +114,7 @@ client.on("messageCreate", async msg => {
     console.log(msg.author.avatarURL({ format: "png" }));
     msg.channel.send({ embeds: [embed] });
   }
-})
 
-client.on("messageCreate", async msg => {
   if (msg.content === "cu!server") {
     const date = new Date(msg.guild.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -117,9 +129,7 @@ client.on("messageCreate", async msg => {
     console.log(msg.author.avatarURL({ format: "png" }));
     msg.channel.send({ embeds: [embed] });
   }
-})
 
-client.on("messageCreate", async msg => {
   if (msg.content === "cu!channel") {
     const date = new Date(msg.channel.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -134,7 +144,6 @@ client.on("messageCreate", async msg => {
     console.log(msg.author.avatarURL({ format: "png" }));
     await msg.channel.send({ embeds: [embed] });
   }
-})
 
 /*
 client.on("messageCreate", async msg => {
@@ -158,7 +167,6 @@ client.on("messageCreate", async msg => {
 })
 */
 
-client.on("messageCreate", async msg => {
   if (msg.content === "!myriad2") {
     const now = new Date();
     const datestr = now.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -372,9 +380,7 @@ client.on("messageCreate", async msg => {
     }
   //  await msg.channel.send(`次回は${now}`);
   }
-})
 
-client.on("messageCreate", async msg => {
   if (msg.content.startsWith(prefix)) {
     try {
       const args = msg.content.trim().split(/ +/g);
@@ -404,10 +410,289 @@ client.on("messageCreate", async msg => {
     catch (error) {
       if (error.name !== "") {
         console.log(`${error.name} : ${error.message}`);
+        // await msg.channel.send(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``);
+        const embed = new Discord.MessageEmbed()
+          embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+          embed.setDescription(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``)
+          embed.addField("エラーコード", "CODE_ERROR", true)
+          embed.setColor("#FC0341")
+          await msg.channel.send({ embeds: [embed] });
       }
     }
   }
+
+  var sendtime = Date.now();
+  if (msg.content === "cu!ping") {
+    var pongmsg = msg.channel.send("Pong!");
+    var pongtime = Date.now();
+    await setTimeout(1000);
+    (await pongmsg).edit(`Pong!\n\nResponse : ${Date.now() - msg.createdTimestamp}ms\nWebSocket : ${client.ws.ping}ms`)
+  }
+
+  if (msg.content === "cu!exit") {
+    const embed = new Discord.MessageEmbed()
+    if (msg.author.id !== "524872647042007067") {
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+    else if (msg.author.id === "524872647042007067") {
+      embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
+      embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
+      embed.setColor("#08B1FF")
+      await msg.channel.send({ embeds: [embed] });
+      process.exit();
+    }
+  }
+
+  var sendtime = Date.now();
+  if (msg.content.startsWith(prefix)) {
+    try {
+      const args = msg.content.trim().split(/ +/g);
+      const cmd = args[0].slice(prefix.length);
+      if (cmd === "rdsay") {
+        if (args[1]) {
+          let ct = 0;
+          let rdmsg = "";
+          while (ct < args[1].length) {
+            var v1 = Math.floor(Math.random() * args[1].length);
+            rdmsg += args[1][v1];
+            ct += 1;
+          }
+          await msg.channel.send(`${rdmsg}`);
+        }
+        else {
+          const rderrmsg = Math.ceil(Math.random() * 5);
+          if (rderrmsg == 1) {
+            await msg.reply("喋らせる言葉を引数に加えてください！！！！！！！！！！(´･_･`)");
+          }
+          else {
+            await msg.reply("喋らせる言葉を引数に加えてください。");
+          }
+        }
+      }
+    }
+    catch (error) {
+      if (error.name !== "") {
+        console.log(`${error.name} : ${error.message}`);
+      }
+    }
+  }
+
+  if (msg.content === "cu!slot") {
+    if (!playing) {
+      playing = true;
+      slot1 = SlotEmoji();
+      slot2 = SlotEmoji();
+      slot3 = SlotEmoji();
+      SlotSpEmoji();
+      var slmsg = msg.channel.send("SLOT START!");
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      (await slmsg).edit(`${slot1} :black_large_square: :black_large_square: `);
+      await setTimeout(1000);
+      (await slmsg).edit(`${slot1} :black_large_square: ${slot3} `);
+      if (slot1 == slot3) {
+        msg.channel.send("REACH!!");
+        await setTimeout(2000);
+      }
+      await setTimeout(1500);
+      (await slmsg).edit(`${slot1} ${slot2} ${slot3} `);
+      if (slot1 == slot2 && slot2 == slot3) {
+        msg.channel.send("**W I N !!!**");
+      }
+      else {
+        msg.channel.send("Play Again!");
+      }
+      if (slot1 == ":three:" && slot2 == ":three:" && slot3 == ":four:") {
+        msg.channel.send("なんでや！");
+      }
+      else if (slot1 == ":five:" && slot2 == ":one:" && slot3 == ":three:") {
+        msg.channel.send("あと「9」があればなぁ...");
+      }
+      else if (slot1 == "<:Cry:704139077162762280>" || slot2 == "<:Cry:704139077162762280>" || slot3 == "<:Cry:704139077162762280>") {
+        msg.channel.send("変なの出てて草");
+      }
+      playing = false;
+    }
+    else {
+      msg.channel.send("現在別のところでスロットが行われているため実行できません。\nしばらくしてからもう一度お試しください。");
+    }
+  }
+
+  if (msg.content === "cu!num100") {
+    if (!numgameplaying) {
+      numgameplaying = true;
+      msg.channel.send("1～100までの数字を予想してください。");
+      numgamech = msg.channelId;
+      numgameuser = msg.author.id;
+      numgameres = Math.ceil(Math.random() * 100);
+      numgametype = "100";
+    }
+    else {
+      msg.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
+    }
+  }
+  if (msg.author.id == numgameuser && msg.channelId == numgamech && numgameplaying && numgametype == "100") {
+    if (!isNaN(msg.content.trim())) {
+      if (parseInt(msg.content.trim()) >= 1 && parseInt(msg.content.trim()) <= 100) {
+        if (numgameres < parseInt(msg.content.trim())) {
+          msg.reply(`不正解！\n「${msg.content.trim()}」より小さいです。`);
+          numgamecount++;
+        }
+        else if (numgameres > parseInt(msg.content.trim())) {
+          msg.reply(`不正解！\n「${msg.content.trim()}」より大きいです。`);
+          numgamecount++;
+        }
+        else if (numgameres == parseInt(msg.content.trim())) {
+          numgamecount++;
+          msg.reply(`正解！！\n正解は「${numgameres}」でした！\n${msg.member.displayName}さんの挑戦数 : ${numgamecount}回`);
+          numgameplaying = false;
+          numgamech = 0;
+          numgameuser = 0;
+          numgameres = 0;
+          numgamecount = 0;
+        }
+      }
+      else {
+        msg.reply(`範囲外です。\n1～100までを入力してください。`);
+      }
+    }
+    else {
+      if (!msg.content.startsWith(prefix)) {
+        msg.reply(`数字を入力してください。`);
+      }
+    }
+  }
+
+  if (msg.content.startsWith(prefix + "numgame")) {
+    const skipstr = prefix + "numgame";
+    if (!numgameplaying) {
+      numgamemax = msg.content.substring(skipstr.length, msg.content.length);
+      if (!isNaN(numgamemax)) {
+        if (parseInt(numgamemax) >= 1 && parseInt(numgamemax) <= 400) {
+          numgameplaying = true;
+          msg.channel.send(`1～${numgamemax}までの数字を予想してください。`);
+          numgamech = msg.channelId;
+          numgameuser = msg.author.id;
+          numgameres = Math.ceil(Math.random() * parseInt(numgamemax));
+          numgametype = "custom";
+        }
+        else{
+          msg.reply("カスタムナンバーゲームの作成に失敗しました。\n指定範囲は1～400にしてください。");
+        }
+      }
+      else {
+        msg.reply("カスタムナンバーゲームの作成に失敗しました。\n\`rs!numgame\`に続く文字列を数字にしてください。");
+      }
+    }
+    else {
+      msg.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
+    }
+  }
+  if (msg.author.id == numgameuser && msg.channelId == numgamech && numgameplaying && numgametype == "custom") {
+    const skipstr = prefix + "numgame";
+    //const numstr = msg.content.substring(skipstr.length, msg.content.length);
+    if (!isNaN(msg.content.trim())) {
+      if (parseInt(msg.content.trim()) >= 1 && parseInt(msg.content.trim()) <= parseInt(numgamemax)) {
+        if (numgameres < parseInt(msg.content.trim())) {
+          msg.reply(`不正解！\n「${msg.content.trim()}」より小さいです。`);
+          numgamecount++;
+        }
+        else if (numgameres > parseInt(msg.content.trim())) {
+          msg.reply(`不正解！\n「${msg.content.trim()}」より大きいです。`);
+          numgamecount++;
+        }
+        else if (numgameres == parseInt(msg.content.trim())) {
+          numgamecount++;
+          msg.reply(`正解！！\n正解は「${numgameres}」でした！\n${msg.member.displayName}さんの挑戦数 : ${numgamecount}回`);
+          numgameplaying = false;
+          numgamech = 0;
+          numgameuser = 0;
+          numgameres = 0;
+          numgamecount = 0;
+        }
+      }
+      else {
+        msg.reply(`範囲外です。\n1～${numgamemax}までを入力してください。`);
+      }
+    }
+    else {
+      if (!msg.content.startsWith(prefix)) {
+        msg.reply(`数字を入力してください。`);
+      }
+    }
+  }
+
+  if (msg.content === "cu!pusher1") {
+    const row = new Discord.MessageActionRow()
+    .addComponents(
+      new Discord.MessageButton()
+      .setCustomId("pusher1coininput")
+      .setLabel("1枚投入")
+      .setStyle("PRIMARY"),
+      new Discord.MessageButton()
+      .setCustomId("pusher1showcoin")
+      .setLabel(`${coinstock}枚`)
+      .setStyle("SECONDARY")
+      .setDisabled(true),
+      new Discord.MessageButton()
+      .setCustomId("pusher1exit")
+      .setLabel("終了")
+      .setStyle("DANGER")
+    );
+    pusher1msg = msg.channel.send({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]});
+  }
+  if (msg.content === "MCC") {
+    var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
+    var pongtime = Date.now();
+    await setTimeout(1500);
+    const wincoin = Math.ceil(Math.random() * 4);
+    const rdpok = Math.floor(Math.random() * 10);
+    (await mccmsg).edit(`ステーション1、${mccpoks[rdpok]}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    const colecttext = mccpoks[rdpok];
+    MCCLevelUp(rdpok);
+    await setTimeout(2000);
+    if(colecttext != "マウンテンJPC"){
+      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    }
+    else{
+      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    }
+  }
+  if (msg.content === "SCC") {
+    var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`);
+    var pongtime = Date.now();
+    await setTimeout(1500);
+    const wincoin = Math.ceil(Math.random() * 4);
+    const rdpok = Math.floor(Math.random() * 10);
+    (await sccmsg).edit(`ステーション1、${sccpoks[rdpok]}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+    const colecttext = sccpoks[rdpok];
+    SCCLevelUp(rdpok);
+    await setTimeout(2000);
+    if(colecttext != "ソルナJPC"){
+      (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+    }
+    else{
+      (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+    }
+  }
 });
+
+let mccpok1 = "30枚";
+let mccpok2 = "30枚";
+let mccpok3 = "50枚";
+let mccpok4 = "30枚";
+let mccpok5 = "30枚";
+let mccpok6 = "30枚";
+let mccpok7 = "50枚";
+let mccpok8 = "30枚";
+let mccpok9 = "30枚";
+let mccpok10 = "マウンテンJPC";
+let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","マウンテンJPC"];
+let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
@@ -416,9 +701,7 @@ client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn2") {
     await inter.reply({ content: `${inter.user.username}さん、こんにちは！`, ephemeral: false });
   }
-});
 
-client.on("interactionCreate", async (inter) => {
   if (inter.commandName === "user") {
     const date = new Date(inter.user.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -476,6 +759,48 @@ client.on("interactionCreate", async (inter) => {
       .addField("サーバー参加日時", `${jndatestr}`, true)
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
+  }
+  if (inter.customId === "pusher1coininput") {
+    coinstock -= 1;
+    console.log(coinstock);
+    const row = new Discord.MessageActionRow()
+    .addComponents(
+      new Discord.MessageButton()
+      .setCustomId("pusher1coininput")
+      .setLabel("1枚投入")
+      .setStyle("PRIMARY"),
+      new Discord.MessageButton()
+      .setCustomId("pusher1showcoin")
+      .setLabel(`${coinstock}枚`)
+      .setStyle("SECONDARY")
+      .setDisabled(true),
+      new Discord.MessageButton()
+      .setCustomId("pusher1exit")
+      .setLabel("終了")
+      .setStyle("DANGER")
+    );
+    inter.update({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]})
+  }
+  if (inter.customId === "pusher1exit") {
+    const row = new Discord.MessageActionRow()
+    .addComponents(
+      new Discord.MessageButton()
+      .setCustomId("pusher1coininput")
+      .setLabel("1枚投入")
+      .setStyle("PRIMARY")
+      .setDisabled(true),
+      new Discord.MessageButton()
+      .setCustomId("pusher1showcoin")
+      .setLabel(`${coinstock}枚`)
+      .setStyle("SECONDARY")
+      .setDisabled(true),
+      new Discord.MessageButton()
+      .setCustomId("pusher1exit")
+      .setLabel("終了")
+      .setStyle("DANGER")
+      .setDisabled(true)
+    );
+    inter.update({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]})
   }
 });
 
@@ -755,120 +1080,7 @@ client.on("guildMemberUpdate", (oldmbr, mbr) => {
   }
 });
 
-client.on("messageCreate", async msg => {
-  var sendtime = Date.now();
-  if (msg.content === "cu!ping") {
-    var message = msg.channel.send("Pong!");
-    var pongtime = Date.now();
-    await setTimeout(1000);
-    (await message).edit(`Pong!\n\nResponse : ${Date.now() - msg.createdTimestamp}ms\nWebSocket : ${client.ws.ping}ms`)
-  }
-})
-
-client.on("messageCreate", async msg => {
-  if (msg.content === "cu!exit") {
-    const embed = new Discord.MessageEmbed()
-    if (msg.author.id !== "524872647042007067") {
-      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
-      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
-      embed.addField("エラーコード", "FOR_BIDDEN", true)
-      embed.setColor("#EB3871")
-      await msg.channel.send({ embeds: [embed] });
-    }
-    else if (msg.author.id === "524872647042007067") {
-      embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
-      embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
-      embed.setColor("#08B1FF")
-      await msg.channel.send({ embeds: [embed] });
-      process.exit();
-    }
-  }
-})
-
-client.on("messageCreate", async msg => {
-  var sendtime = Date.now();
-  if (msg.content.startsWith(prefix)) {
-    try {
-      const args = msg.content.trim().split(/ +/g);
-      const cmd = args[0].slice(prefix.length);
-      if (cmd === "rdsay") {
-        if (args[1]) {
-          let ct = 0;
-          let rdmsg = "";
-          while (ct < args[1].length) {
-            var v1 = Math.floor(Math.random() * args[1].length);
-            rdmsg += args[1][v1];
-            ct += 1;
-          }
-          await msg.channel.send(`${rdmsg}`);
-        }
-        else {
-          const rderrmsg = Math.ceil(Math.random() * 5);
-          if (rderrmsg == 1) {
-            await msg.reply("喋らせる言葉を引数に加えてください！！！！！！！！！！(´･_･`)");
-          }
-          else {
-            await msg.reply("喋らせる言葉を引数に加えてください。");
-          }
-        }
-      }
-    }
-    catch (error) {
-      if (error.name !== "") {
-        console.log(`${error.name} : ${error.message}`);
-      }
-    }
-  }
-})
-
-let slot1 = "";
-let slot2 = "";
-let slot3 = "";
-let playing = false;
-
-client.on("messageCreate", async message => {
-  if (message.content === "cu!slot") {
-    if (!playing) {
-      playing = true;
-      slot1 = SlotEmoji();
-      slot2 = SlotEmoji();
-      slot3 = SlotEmoji();
-      SlotSpEmoji();
-      var msg = message.channel.send("SLOT START!");
-      var pongtime = Date.now();
-      await setTimeout(1500);
-      (await msg).edit(`${slot1} :black_large_square: :black_large_square: `);
-      await setTimeout(1000);
-      (await msg).edit(`${slot1} :black_large_square: ${slot3} `);
-      if (slot1 == slot3) {
-        message.channel.send("REACH!!");
-        await setTimeout(2000);
-      }
-      await setTimeout(1500);
-      (await msg).edit(`${slot1} ${slot2} ${slot3} `);
-      if (slot1 == slot2 && slot2 == slot3) {
-        message.channel.send("**W I N !!!**");
-      }
-      else {
-        message.channel.send("Play Again!");
-      }
-      if (slot1 == ":three:" && slot2 == ":three:" && slot3 == ":four:") {
-        message.channel.send("なんでや！");
-      }
-      else if (slot1 == ":five:" && slot2 == ":one:" && slot3 == ":three:") {
-        message.channel.send("あと「9」があればなぁ...");
-      }
-      else if (slot1 == "<:Cry:704139077162762280>" || slot2 == "<:Cry:704139077162762280>" || slot3 == "<:Cry:704139077162762280>") {
-        message.channel.send("変なの出てて草");
-      }
-      playing = false;
-    }
-    else {
-      message.channel.send("現在別のところでスロットが行われているため実行できません。\nしばらくしてからもう一度お試しください。");
-    }
-  }
-})
-
+// 必要関数
 function SlotEmoji() {
   const rdslot = Math.ceil(Math.random() * 9);
   if (rdslot == 1) {
@@ -919,120 +1131,36 @@ function SlotSpEmoji() {
   }
 }
 
-let numgameplaying = false;
-let numgamech = 0;
-let numgameuser = 0;
-let numgameres = 0;
-let numgamecount = 0;
-let numgametype = "100";
-let numgamemax = "100";
+function MCCLevelUp(via)
+{
+  if(mccpoks[via] == "30枚"){
+    mccpoks[via] = "50枚";
+  }
+  else if(mccpoks[via] == "50枚"){
+    mccpoks[via] = "80枚";
+  }
+  else if(mccpoks[via] == "80枚"){
+    mccpoks[via] = "マウンテンJPC";
+  }
+  else if(mccpoks[via] == "マウンテンJPC" && via != 9){
+    mccpoks[via] = "30枚";
+  }
+}
 
-client.on("messageCreate", async message => {
-  if (message.content === "cu!num100") {
-    if (!numgameplaying) {
-      numgameplaying = true;
-      message.channel.send("1～100までの数字を予想してください。");
-      numgamech = message.channelId;
-      numgameuser = message.author.id;
-      numgameres = Math.ceil(Math.random() * 100);
-      numgametype = "100";
-    }
-    else {
-      message.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
-    }
+function SCCLevelUp(via)
+{
+  if(sccpoks[via] == "30枚"){
+    sccpoks[via] = "50枚";
   }
-  if (message.author.id == numgameuser && message.channelId == numgamech && numgameplaying && numgametype == "100") {
-    if (!isNaN(message.content.trim())) {
-      if (parseInt(message.content.trim()) >= 1 && parseInt(message.content.trim()) <= 100) {
-        if (numgameres < parseInt(message.content.trim())) {
-          message.reply(`不正解！\n「${message.content.trim()}」より小さいです。`);
-          numgamecount++;
-        }
-        else if (numgameres > parseInt(message.content.trim())) {
-          message.reply(`不正解！\n「${message.content.trim()}」より大きいです。`);
-          numgamecount++;
-        }
-        else if (numgameres == parseInt(message.content.trim())) {
-          numgamecount++;
-          message.reply(`正解！！\n正解は「${numgameres}」でした！\n${message.member.displayName}さんの挑戦数 : ${numgamecount}回`);
-          numgameplaying = false;
-          numgamech = 0;
-          numgameuser = 0;
-          numgameres = 0;
-          numgamecount = 0;
-        }
-      }
-      else {
-        message.reply(`範囲外です。\n1～100までを入力してください。`);
-      }
-    }
-    else {
-      if (!message.content.startsWith(prefix)) {
-        message.reply(`数字を入力してください。`);
-      }
-    }
+  else if(sccpoks[via] == "50枚"){
+    sccpoks[via] = "80枚";
   }
-})
-
-client.on("messageCreate", async message => {
-  if (message.content.startsWith(prefix + "numgame")) {
-    const skipstr = prefix + "numgame";
-    if (!numgameplaying) {
-      numgamemax = message.content.substring(skipstr.length, message.content.length);
-      if (!isNaN(numgamemax)) {
-        if (parseInt(numgamemax) >= 1 && parseInt(numgamemax) <= 400) {
-          numgameplaying = true;
-          message.channel.send(`1～${numgamemax}までの数字を予想してください。`);
-          numgamech = message.channelId;
-          numgameuser = message.author.id;
-          numgameres = Math.ceil(Math.random() * parseInt(numgamemax));
-          numgametype = "custom";
-        }
-        else{
-          message.reply("カスタムナンバーゲームの作成に失敗しました。\n指定範囲は1～400にしてください。");
-        }
-      }
-      else {
-        message.reply("カスタムナンバーゲームの作成に失敗しました。\n\`rs!numgame\`に続く文字列を数字にしてください。");
-      }
-    }
-    else {
-      message.reply("現在他のユーザーがナンバーゲームをプレイ中です。");
-    }
+  else if(sccpoks[via] == "80枚"){
+    sccpoks[via] = "ソルナJPC";
   }
-  if (message.author.id == numgameuser && message.channelId == numgamech && numgameplaying && numgametype == "custom") {
-    const skipstr = prefix + "numgame";
-    //const numstr = message.content.substring(skipstr.length, message.content.length);
-    if (!isNaN(message.content.trim())) {
-      if (parseInt(message.content.trim()) >= 1 && parseInt(message.content.trim()) <= parseInt(numgamemax)) {
-        if (numgameres < parseInt(message.content.trim())) {
-          message.reply(`不正解！\n「${message.content.trim()}」より小さいです。`);
-          numgamecount++;
-        }
-        else if (numgameres > parseInt(message.content.trim())) {
-          message.reply(`不正解！\n「${message.content.trim()}」より大きいです。`);
-          numgamecount++;
-        }
-        else if (numgameres == parseInt(message.content.trim())) {
-          numgamecount++;
-          message.reply(`正解！！\n正解は「${numgameres}」でした！\n${message.member.displayName}さんの挑戦数 : ${numgamecount}回`);
-          numgameplaying = false;
-          numgamech = 0;
-          numgameuser = 0;
-          numgameres = 0;
-          numgamecount = 0;
-        }
-      }
-      else {
-        message.reply(`範囲外です。\n1～${numgamemax}までを入力してください。`);
-      }
-    }
-    else {
-      if (!message.content.startsWith(prefix)) {
-        message.reply(`数字を入力してください。`);
-      }
-    }
+  else if(sccpoks[via] == "ソルナJPC" && via != 9){
+    sccpoks[via] = "30枚";
   }
-})
+}
 
 client.login(process.env.BOT_TOKEN)
