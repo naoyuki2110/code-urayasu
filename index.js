@@ -1158,7 +1158,7 @@ function MCCLevelUp(via)
   else if(mccpoks[via] == "80枚"){
     mccpoks[via] = "マウンテンJPC";
   }
-  else if(mccpoks[via] == "マウンテンJPC" && via != 9){
+  else if(mccpoks[via] == "マウンテンJPC" && mccpoks.filter(val => val == "マウンテンJPC").length > 1){
     mccpoks[via] = "30枚";
   }
 }
@@ -1174,7 +1174,7 @@ function SCCLevelUp(via)
   else if(sccpoks[via] == "80枚"){
     sccpoks[via] = "ソルナJPC";
   }
-  else if(sccpoks[via] == "ソルナJPC" && via != 9){
+  else if(sccpoks[via] == "ソルナJPC" && sccpoks.filter(val => val == "ソルナJPC").length > 1){
     sccpoks[via] = "30枚";
   }
 }
