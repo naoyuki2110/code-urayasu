@@ -722,7 +722,12 @@ client.on("messageCreate", async msg => {
     (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n**IN!**`);
     await setTimeout(1500);
     const colecttext = mjpcpoks[rdpok];
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext}を獲得しました！`);
+    if(colecttext != "MountainJP"){
+      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext}を獲得しました！`);
+    }
+    else{
+      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext} (${mountainjp}枚)を獲得しました！`);
+    }
     mountainjp = 1000;
     maxmjpupct = 20;
     mjpcplaying = false;
@@ -750,7 +755,7 @@ let sccplaying = false;
 let mountainjp = 1000;
 let soljp = 1800;
 let lunajp = 1500;
-let mjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE",`MountainJP (${mountainjp}枚)`];
+let mjpcpoks = ["100枚","100枚","150枚","200枚","100枚","150枚","100枚","200枚","100枚","200枚","300枚","150枚","CHANCE","CHANCE","MountainJP"];
 let sjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","SolJP","LunaJP"];
 let mjpcup = ["100枚","200枚","300枚","400枚","2倍"];
 let mjpcplaying = false;
