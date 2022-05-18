@@ -706,23 +706,23 @@ client.on("messageCreate", async msg => {
     var mjpcmsg = msg.channel.send(`マウンテンJPチャンス！スタート！`);
     var pongtime = Date.now();
     await setTimeout(1500);
+    const wincoin = Math.ceil(Math.random() * 4);
+    const rdpok = Math.floor(Math.random() * 15);
     (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚`);
     await setTimeout(1000);
     for(let i = 1; Math.ceil(Math.random() * 20) > i; i++){
     if(mountainjp > 10000){
       mountainjp = 10000;
     }
-    const wincoin = Math.ceil(Math.random() * 4);
-    const rdpok = Math.floor(Math.random() * 15);
     let jpup = MJPCJpUp(1);
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥n${jpup}`);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n${jpup}`);
     // const colecttext = mccpoks[rdpok];
     await setTimeout(3000);
     }
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥n**IN!**`);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n**IN!**`);
     await setTimeout(1500);
     const colecttext = mjpcpoks[rdpok];
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥nステーション1、${colecttext}を獲得しました！`);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext}を獲得しました！`);
     mountainjp = 1000;
     maxmjpupct = 20;
     mjpcplaying = false;
