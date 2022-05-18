@@ -89,6 +89,13 @@ Prefixは \`cu!\`
 \`cu!channel\` : チャンネル情報を表示します
 \`cu!ping\` : 通信速度を表示します
 \`cu!slot\` : 3リールスロットを実行します
+\`cu!pusher1\` : プッシャーを実行します ※開発中
+
+簡易コマンド編
+\`MCC\` : 仮想マウンテンクルーンチャレンジを実行します
+\`SCC\` : 仮想ソルナクルーンチャレンジを実行します
+\`MJPC\` : 仮想マウンテンJPチャンスを実行します
+\`SJPC\` : 仮想ソルナJPチャンスを実行します
 
 その他
 \`cu-thinking-board\` というチャンネルを作成すると、サーバー内でシンキングリアクションがされたときにそのチャンネルでボードが表示されます。
@@ -691,6 +698,30 @@ client.on("messageCreate", async msg => {
     }
     else{
     msg.reply("現在別の場所でソルナクルーンチャレンジが行われています。");
+    }
+  }
+  if (msg.content === "MJPC") {
+    if(!mccplaying){
+    mccplaying = true;
+    var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
+    var pongtime = Date.now();
+    await setTimeout(1500);
+    const wincoin = Math.ceil(Math.random() * 4);
+    const rdpok = Math.floor(Math.random() * 10);
+    (await mccmsg).edit(`ステーション1、${mccpoks[rdpok]}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    const colecttext = mccpoks[rdpok];
+    MCCLevelUp(rdpok);
+    await setTimeout(2000);
+    if(colecttext != "マウンテンJPC"){
+      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    }
+    else{
+      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    }
+    mccplaying = false;
+    }
+    else {
+      msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
     }
   }
 });
