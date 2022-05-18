@@ -719,10 +719,10 @@ client.on("messageCreate", async msg => {
     // const colecttext = mccpoks[rdpok];
     await setTimeout(3000);
     }
-    (await mccmsg).edit(`MountainJP : ${mountainjp}枚¥n**IN!**`);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥n**IN!**`);
     await setTimeout(1500);
     const colecttext = mjpcpoks[rdpok];
-    (await mccmsg).edit(`MountainJP : ${mountainjp}枚¥nステーション1、${colecttext}を獲得しました！`);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥nステーション1、${colecttext}を獲得しました！`);
     mountainjp = 1000;
     maxmjpupct = 20;
     mjpcplaying = false;
