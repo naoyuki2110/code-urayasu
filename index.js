@@ -701,27 +701,34 @@ client.on("messageCreate", async msg => {
     }
   }
   if (msg.content === "MJPC") {
-    if(!mccplaying){
-    mccplaying = true;
-    var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
+    if(!mjpcplaying){
+    mjpcplaying = true;
+    var mjpcmsg = msg.channel.send(`マウンテンJPチャンス！スタート！`);
     var pongtime = Date.now();
     await setTimeout(1500);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚`);
+    await setTimeout(1000);
+    for(let i = 1; Math.ceil(Math.random() * 20) > i; i++){
+    if(mountainjp > 10000){
+      mountainjp = 10000;
+    }
     const wincoin = Math.ceil(Math.random() * 4);
-    const rdpok = Math.floor(Math.random() * 10);
-    (await mccmsg).edit(`ステーション1、${mccpoks[rdpok]}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
-    const colecttext = mccpoks[rdpok];
-    MCCLevelUp(rdpok);
-    await setTimeout(2000);
-    if(colecttext != "マウンテンJPC"){
-      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+    const rdpok = Math.floor(Math.random() * 15);
+    let jpup = MJPCJpUp(1);
+    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚¥n${jpup}`);
+    // const colecttext = mccpoks[rdpok];
+    await setTimeout(3000);
     }
-    else{
-      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
-    }
-    mccplaying = false;
+    (await mccmsg).edit(`MountainJP : ${mountainjp}枚¥n**IN!**`);
+    await setTimeout(1500);
+    const colecttext = mjpcpoks[rdpok];
+    (await mccmsg).edit(`MountainJP : ${mountainjp}枚¥nステーション1、${colecttext}を獲得しました！`);
+    mountainjp = 1000;
+    maxmjpupct = 20;
+    mjpcplaying = false;
     }
     else {
-      msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
+      msg.reply("現在別の場所でマウンテンJPチャンスが行われています。");
     }
   }
 });
@@ -740,10 +747,14 @@ let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","
 let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
 let mccplaying = false;
 let sccplaying = false;
-let mjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","MountainJP"];
+let mjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE",`MountainJP (${mountainjp}枚)`];
 let sjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","SolJP","LunaJP"];
+let mjpcup = ["100枚","200枚","300枚","400枚","2倍"];
 let mjpcplaying = false;
 let sjpcplaying = false;
+let mountainjp = 1000;
+let soljp = 1800;
+let lunajp = 1500;
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
@@ -1211,6 +1222,33 @@ function SCCLevelUp(via)
   }
   else if(sccpoks[via] == "ソルナJPC" && sccpoks.filter(val => val == "ソルナJPC").length > 1){
     sccpoks[via] = "30枚";
+  }
+}
+
+let maxmjpupct = 20;
+function MJPCJpUp(via)
+{
+  const rdjpup = Math.ceil(Math.random() * maxmjpupct);
+  if(rdjpup >= 1 && rdjpup <= 8){
+    mountainjp += 100;
+    return "100枚アップ！";
+  }
+  else if(rdjpup >= 9 && rdjpup <= 13){
+    mountainjp += 200;
+    return "200枚アップ！";
+  }
+  else if(rdjpup >= 14 && rdjpup <= 17){
+    mountainjp += 300;
+    return "300枚アップ！";
+  }
+  else if(rdjpup >= 18 && rdjpup <= 19){
+    mountainjp += 400;
+    return "400枚アップ！";
+  }
+  else if(rdjpup == 20){
+    mountainjp = mountainjp * 2;
+    maxmjpupct = 19;
+    return "JP2倍！";
   }
 }
 
