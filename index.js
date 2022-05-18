@@ -646,6 +646,8 @@ client.on("messageCreate", async msg => {
     pusher1msg = msg.channel.send({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]});
   }
   if (msg.content === "MCC") {
+    if(!mccplaying){
+    mccplaying = true;
     var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
     var pongtime = Date.now();
     await setTimeout(1500);
@@ -661,8 +663,15 @@ client.on("messageCreate", async msg => {
     else{
       (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
     }
+    mccplaying = false;
+    }
+    else {
+      msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
+    }
   }
   if (msg.content === "SCC") {
+    if(!sccplaying){
+      sccplaying = true;
     var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`);
     var pongtime = Date.now();
     await setTimeout(1500);
@@ -677,6 +686,11 @@ client.on("messageCreate", async msg => {
     }
     else{
       (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+    }
+    sccplaying = false;
+    }
+    else{
+    msg.reply("現在別の場所でソルナクルーンチャレンジが行われています。");
     }
   }
 });
@@ -693,6 +707,8 @@ let mccpok9 = "30枚";
 let mccpok10 = "マウンテンJPC";
 let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","マウンテンJPC"];
 let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
+let mccplaying = false;
+let sccplaying = false;
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
