@@ -709,6 +709,10 @@ let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","
 let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
 let mccplaying = false;
 let sccplaying = false;
+let mjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","MountainJP"];
+let sjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","SolJP","LunaJP"];
+let mjpcplaying = false;
+let sjpcplaying = false;
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
