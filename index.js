@@ -747,14 +747,14 @@ let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","
 let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
 let mccplaying = false;
 let sccplaying = false;
+let mountainjp = 1000;
+let soljp = 1800;
+let lunajp = 1500;
 let mjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE",`MountainJP (${mountainjp}枚)`];
 let sjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","SolJP","LunaJP"];
 let mjpcup = ["100枚","200枚","300枚","400枚","2倍"];
 let mjpcplaying = false;
 let sjpcplaying = false;
-let mountainjp = 1000;
-let soljp = 1800;
-let lunajp = 1500;
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
