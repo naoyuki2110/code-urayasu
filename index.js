@@ -10,6 +10,14 @@ require("date-utils");
 
 const { setTimeout } = require("timers/promises")
 
+// データ保存システム読み込み
+const Keyv = require("keyv");
+
+const svmccdiv = new Keyv("sqlite://sqlite.db",{table:"svmccdiv"});
+const svsccdiv = new Keyv("sqlite://sqlite.db",{table:"svsccdiv"});
+svmccdiv.on("error", err => console.log("Keyv error:",err));
+svsccdiv.on("error", err => console.log("Keyv error:",err));
+
 // BOTプレフィックス宣言
 const prefix = "cu!";
 
@@ -152,27 +160,27 @@ Prefixは \`cu!\`
     await msg.channel.send({ embeds: [embed] });
   }
 
-/*
-client.on("messageCreate", async msg => {
-  if (msg.content === "!exit") {
-    const embed = new Discord.MessageEmbed()
-    if (msg.author.id !== "524872647042007067") {
-      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
-      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
-      embed.addField("エラーコード", "FOR_BIDDEN", true)
-      embed.setColor("#EB3871")
-      await msg.channel.send({ embeds: [embed] });
+  /*
+  client.on("messageCreate", async msg => {
+    if (msg.content === "!exit") {
+      const embed = new Discord.MessageEmbed()
+      if (msg.author.id !== "524872647042007067") {
+        embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+        embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+        embed.addField("エラーコード", "FOR_BIDDEN", true)
+        embed.setColor("#EB3871")
+        await msg.channel.send({ embeds: [embed] });
+      }
+      else if (msg.author.id === "524872647042007067") {
+        embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
+        embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
+        embed.setColor("#08B1FF")
+        await msg.channel.send({ embeds: [embed] });
+        process.exit();
+      }
     }
-    else if (msg.author.id === "524872647042007067") {
-      embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
-      embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
-      embed.setColor("#08B1FF")
-      await msg.channel.send({ embeds: [embed] });
-      process.exit();
-    }
-  }
-})
-*/
+  })
+  */
 
   if (msg.content === "!myriad2") {
     const now = new Date();
@@ -185,16 +193,16 @@ client.on("messageCreate", async msg => {
     //now.setHours(21);
     //now.setMinutes(30);
     //now.setSeconds(1);
-    if(now.getDay() == 1){
+    if (now.getDay() == 1) {
       myrtime.setHours(20);
       myrtime.setMinutes(0);
       myrtime.setSeconds(0);
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(18);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
@@ -202,22 +210,22 @@ client.on("messageCreate", async msg => {
         gametype = "レース";
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         gametype = "JPゲーム";
         console.log(datestr);
       }
     }
-    else if(now.getDay() == 2){
+    else if (now.getDay() == 2) {
       myrtime.setHours(18);
       myrtime.setMinutes(0);
       myrtime.setSeconds(0);
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(21);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
@@ -225,22 +233,22 @@ client.on("messageCreate", async msg => {
         gametype = "JPゲーム";
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
         gametype = "レース";
       }
     }
-    else if(now.getDay() == 3){
+    else if (now.getDay() == 3) {
       myrtime.setHours(21);
       myrtime.setMinutes(0);
       myrtime.setSeconds(0);
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(20);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
@@ -248,22 +256,22 @@ client.on("messageCreate", async msg => {
         gametype = "レース";
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         gametype = "JPゲーム";
         console.log(datestr);
       }
     }
-    else if(now.getDay() == 4){
+    else if (now.getDay() == 4) {
       myrtime.setHours(20);
       myrtime.setMinutes(0);
       myrtime.setSeconds(0);
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(22);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
@@ -271,13 +279,13 @@ client.on("messageCreate", async msg => {
         gametype = "JPゲーム";
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         gametype = "レース";
         console.log(datestr);
       }
     }
-    else if(now.getDay() == 5){
+    else if (now.getDay() == 5) {
       //myrtime.setDate(now.getDate());
       myrtime.setHours(22);
       myrtime.setMinutes(0);
@@ -285,27 +293,27 @@ client.on("messageCreate", async msg => {
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         doniti = true;
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(20);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
-        myrtime2.setDate(now.getDate()+1);
+        myrtime2.setDate(now.getDate() + 1);
         myrtime2.setHours(20);
         myrtime2.setMinutes(30);
         myrtime2.setSeconds(0);
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         gametype = "JPゲーム";
         console.log(datestr);
       }
     }
-    else if(now.getDay() == 6){
+    else if (now.getDay() == 6) {
       //myrtime.setDate(now.getDate());
       //myrtime2.setDate(now.getDate());
       myrtime.setHours(20);
@@ -317,33 +325,33 @@ client.on("messageCreate", async msg => {
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
         doniti = true;
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(21);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
       }
-      if(now.getTime() >= myrtime2.getTime()){
+      if (now.getTime() >= myrtime2.getTime()) {
         console.log("過ぎてる");
         doniti = true;
-        myrtime2.setDate(now.getDate()+1);
+        myrtime2.setDate(now.getDate() + 1);
         myrtime2.setHours(21);
         myrtime2.setMinutes(30);
         myrtime2.setSeconds(0);
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         doniti = true;
         console.log(datestr);
       }
     }
-    else if(now.getDay() == 0){
+    else if (now.getDay() == 0) {
       //myrtime.setDate(now.getDate());
       //myrtime2.setDate(now.getDate());
       myrtime.setHours(21);
@@ -355,37 +363,37 @@ client.on("messageCreate", async msg => {
       //now.setHours(20);
       //now.setMinutes(0);
       //now.setSeconds(0);
-      if(now.getTime() >= myrtime.getTime()){
+      if (now.getTime() >= myrtime.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(20);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
       }
-      if(now.getTime() >= myrtime2.getTime()){
+      if (now.getTime() >= myrtime2.getTime()) {
         console.log("過ぎてる");
-        myrtime.setDate(now.getDate()+1);
+        myrtime.setDate(now.getDate() + 1);
         myrtime.setHours(20);
         myrtime.setMinutes(0);
         myrtime.setSeconds(0);
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         console.log(datestr);
       }
-      else{
+      else {
         const datestr = myrtime.toFormat("YYYY/MM/DD HH24:MI:SS");
         doniti = true;
         console.log(datestr);
       }
     }
-    if(!doniti){
-      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアド${gametype}が開催されます。\n\n開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒です。`);
+    if (!doniti) {
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアド${gametype}が開催されます。\n\n開催まであと${Math.floor((myrtime.getTime() - now.getTime()) / 1000 / 3600)}時間${Math.floor((myrtime.getTime() - now.getTime()) / 1000 % 3600 / 60)}分${Math.floor((myrtime.getTime() - now.getTime()) / 1000 % 60)}秒です。`);
     }
-    else{
-      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドJPゲーム、\n${myrtime2.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドレースが開催されます。\n\nミリアドJPゲーム開催まであと${Math.floor((myrtime.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime.getTime()-now.getTime())/1000 % 60)}秒、\nミリアドレース開催まであと${Math.floor((myrtime2.getTime()-now.getTime())/1000 / 3600)}時間${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 3600/60)}分${Math.floor((myrtime2.getTime()-now.getTime())/1000 % 60)}秒です。`);
+    else {
+      await msg.channel.send(`次回は${myrtime.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドJPゲーム、\n${myrtime2.toFormat("YYYY年M月DD日 HH24時MI分")}にミリアドレースが開催されます。\n\nミリアドJPゲーム開催まであと${Math.floor((myrtime.getTime() - now.getTime()) / 1000 / 3600)}時間${Math.floor((myrtime.getTime() - now.getTime()) / 1000 % 3600 / 60)}分${Math.floor((myrtime.getTime() - now.getTime()) / 1000 % 60)}秒、\nミリアドレース開催まであと${Math.floor((myrtime2.getTime() - now.getTime()) / 1000 / 3600)}時間${Math.floor((myrtime2.getTime() - now.getTime()) / 1000 % 3600 / 60)}分${Math.floor((myrtime2.getTime() - now.getTime()) / 1000 % 60)}秒です。`);
     }
-  //  await msg.channel.send(`次回は${now}`);
+    //  await msg.channel.send(`次回は${now}`);
   }
 
   if (msg.content.startsWith(prefix)) {
@@ -419,11 +427,11 @@ client.on("messageCreate", async msg => {
         console.log(`${error.name} : ${error.message}`);
         // await msg.channel.send(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``);
         const embed = new Discord.MessageEmbed()
-          embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
-          embed.setDescription(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``)
-          embed.addField("エラーコード", "CODE_ERROR", true)
-          embed.setColor("#FC0341")
-          await msg.channel.send({ embeds: [embed] });
+        embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+        embed.setDescription(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``)
+        embed.addField("エラーコード", "CODE_ERROR", true)
+        embed.setColor("#FC0341")
+        await msg.channel.send({ embeds: [embed] });
       }
     }
   }
@@ -438,14 +446,14 @@ client.on("messageCreate", async msg => {
 
   if (msg.content === "cu!exit") {
     const embed = new Discord.MessageEmbed()
-    if (msg.author.id !== "524872647042007067") {
+    if (msg.author.id !== "524872647042007067" && msg.author.id !== "692980438729228329") {
       embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
       embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
       embed.addField("エラーコード", "FOR_BIDDEN", true)
       embed.setColor("#EB3871")
       await msg.channel.send({ embeds: [embed] });
     }
-    else if (msg.author.id === "524872647042007067") {
+    else if (msg.author.id === "524872647042007067" || msg.author.id === "692980438729228329") {
       embed.setAuthor({ name: "プロセス終了", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
       embed.setDescription(`${client.user.tag}のプロセスを終了します。`)
       embed.setColor("#08B1FF")
@@ -587,7 +595,7 @@ client.on("messageCreate", async msg => {
           numgameres = Math.ceil(Math.random() * parseInt(numgamemax));
           numgametype = "custom";
         }
-        else{
+        else {
           msg.reply("カスタムナンバーゲームの作成に失敗しました。\n指定範囲は1～400にしてください。");
         }
       }
@@ -635,105 +643,194 @@ client.on("messageCreate", async msg => {
 
   if (msg.content === "cu!pusher1") {
     const row = new Discord.MessageActionRow()
-    .addComponents(
-      new Discord.MessageButton()
-      .setCustomId("pusher1coininput")
-      .setLabel("1枚投入")
-      .setStyle("PRIMARY"),
-      new Discord.MessageButton()
-      .setCustomId("pusher1showcoin")
-      .setLabel(`${coinstock}枚`)
-      .setStyle("SECONDARY")
-      .setDisabled(true),
-      new Discord.MessageButton()
-      .setCustomId("pusher1exit")
-      .setLabel("終了")
-      .setStyle("DANGER")
-    );
-    pusher1msg = msg.channel.send({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]});
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId("pusher1coininput")
+          .setLabel("1枚投入")
+          .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+          .setCustomId("pusher1showcoin")
+          .setLabel(`${coinstock}枚`)
+          .setStyle("SECONDARY")
+          .setDisabled(true),
+        new Discord.MessageButton()
+          .setCustomId("pusher1exit")
+          .setLabel("終了")
+          .setStyle("DANGER")
+      );
+    pusher1msg = msg.channel.send({ content: `NORMAL MODE\nSatelliteChallenge : 0`, components: [row] });
   }
+  /*
   if (msg.content === "MCC") {
-    if(!mccplaying){
-    mccplaying = true;
-    var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
-    var pongtime = Date.now();
-    await setTimeout(1500);
-    const wincoin = Math.ceil(Math.random() * 4);
-    const rdpok = Math.floor(Math.random() * 10);
-    (await mccmsg).edit(`ステーション1、${mccpoks[rdpok]}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
-    const colecttext = mccpoks[rdpok];
-    MCCLevelUp(rdpok);
-    await setTimeout(2000);
-    if(colecttext != "マウンテンJPC"){
-      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
-    }
-    else{
-      (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
-    }
-    mccplaying = false;
+    if (!mccplaying) {
+      mccplaying = true;
+      var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      const wincoin = Math.ceil(Math.random() * 4);
+      const rdpok = Math.floor(Math.random() * 10);
+      (await mccmsg).edit(`ステーション1、${mccpoks[rdpok]}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+      const colecttext = mccpoks[rdpok];
+      MCCLevelUp(rdpok);
+      await setTimeout(2000);
+      if (colecttext != "マウンテンJPC") {
+        (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+      }
+      else {
+        (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${mccpoks[0]}　${mccpoks[1]}　${mccpoks[2]}　${mccpoks[3]}　${mccpoks[4]}　${mccpoks[5]}　${mccpoks[6]}　${mccpoks[7]}　${mccpoks[8]}　${mccpoks[9]}`)
+      }
+      mccplaying = false;
     }
     else {
       msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
     }
   }
   if (msg.content === "SCC") {
-    if(!sccplaying){
+    if (!sccplaying) {
       sccplaying = true;
-    var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`);
-    var pongtime = Date.now();
-    await setTimeout(1500);
-    const wincoin = Math.ceil(Math.random() * 4);
-    const rdpok = Math.floor(Math.random() * 10);
-    (await sccmsg).edit(`ステーション1、${sccpoks[rdpok]}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
-    const colecttext = sccpoks[rdpok];
-    SCCLevelUp(rdpok);
-    await setTimeout(2000);
-    if(colecttext != "ソルナJPC"){
-      (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+      var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      const wincoin = Math.ceil(Math.random() * 4);
+      const rdpok = Math.floor(Math.random() * 10);
+      (await sccmsg).edit(`ステーション1、${sccpoks[rdpok]}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+      const colecttext = sccpoks[rdpok];
+      SCCLevelUp(rdpok);
+      await setTimeout(2000);
+      if (colecttext != "ソルナJPC") {
+        (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+      }
+      else {
+        (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+      }
+      sccplaying = false;
     }
-    else{
-      (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${sccpoks[0]}　${sccpoks[1]}　${sccpoks[2]}　${sccpoks[3]}　${sccpoks[4]}　${sccpoks[5]}　${sccpoks[6]}　${sccpoks[7]}　${sccpoks[8]}　${sccpoks[9]}`)
+    else {
+      msg.reply("現在別の場所でソルナクルーンチャレンジが行われています。");
     }
-    sccplaying = false;
+  }
+  */
+  if (msg.content === "MCC") {
+    if (!mccplaying) {
+      mccplaying = true;
+      if(await svmccdiv.get("pprmccdiv")){
+  
+      }
+      else{
+        await svmccdiv.set("pprmccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"]);
+      }
+      mccpoks = await svmccdiv.get("pprmccdiv");
+      let svmccpoks = await svmccdiv.get("pprmccdiv");
+      console.log(svmccpoks);
+      var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      const wincoin = Math.ceil(Math.random() * 4);
+      const rdpok = Math.floor(Math.random() * 10);
+      (await mccmsg).edit(`ステーション1、${svmccpoks[rdpok]}を獲得しました！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`)
+      const colecttext = mccpoks[rdpok];
+      MCCLevelUp(rdpok);
+      await svmccdiv.set("pprmccdiv",mccpoks);
+      svmccpoks = await svmccdiv.get("pprmccdiv");
+      await setTimeout(2000);
+      if (colecttext != "マウンテンJPC") {
+        (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`)
+      }
+      else {
+        (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`)
+      }
+      mccplaying = false;
     }
-    else{
-    msg.reply("現在別の場所でソルナクルーンチャレンジが行われています。");
+    else {
+      msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
+    }
+  }
+  if (msg.content === "SCC") {
+    if (!sccplaying) {
+      sccplaying = true;
+      if(await svsccdiv.get("pprsccdiv")){
+  
+      }
+      else{
+        await svsccdiv.set("pprsccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "ソルナJPC"]);
+      }
+      sccpoks = await svsccdiv.get("pprsccdiv");
+      let svsccpoks = await svsccdiv.get("pprsccdiv");
+      var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      const wincoin = Math.ceil(Math.random() * 4);
+      const rdpok = Math.floor(Math.random() * 10);
+      (await sccmsg).edit(`ステーション1、${svsccpoks[rdpok]}を獲得しました！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`)
+      const colecttext = sccpoks[rdpok];
+      SCCLevelUp(rdpok);
+      await svsccdiv.set("pprsccdiv",sccpoks);
+      svsccpoks = await svsccdiv.get("pprsccdiv");
+      await setTimeout(2000);
+      if (colecttext != "ソルナJPC") {
+        (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`)
+      }
+      else {
+        (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`)
+      }
+      sccplaying = false;
+    }
+    else {
+      msg.reply("現在別の場所でソルナクルーンチャレンジが行われています。");
     }
   }
   if (msg.content === "MJPC") {
-    if(!mjpcplaying){
-    mjpcplaying = true;
-    var mjpcmsg = msg.channel.send(`マウンテンJPチャンス！スタート！`);
-    var pongtime = Date.now();
-    await setTimeout(1500);
-    const wincoin = Math.ceil(Math.random() * 4);
-    const rdpok = Math.floor(Math.random() * 15);
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚`);
-    await setTimeout(1000);
-    for(let i = 1; Math.ceil(Math.random() * 20) > i; i++){
-    if(mountainjp > 10000){
-      mountainjp = 10000;
-    }
-    let jpup = MJPCJpUp(1);
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n${jpup}`);
-    // const colecttext = mccpoks[rdpok];
-    await setTimeout(3000);
-    }
-    (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n**IN!**`);
-    await setTimeout(1500);
-    const colecttext = mjpcpoks[rdpok];
-    if(colecttext != "MountainJP"){
-      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext}を獲得しました！`);
-    }
-    else{
-      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext} (${mountainjp}枚)を獲得しました！`);
-    }
-    mountainjp = 1000;
-    maxmjpupct = 20;
-    mjpcplaying = false;
+    if (!mjpcplaying) {
+      mjpcplaying = true;
+      var mjpcmsg = msg.channel.send(`マウンテンJPチャンス！スタート！`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      const wincoin = Math.ceil(Math.random() * 4);
+      const rdpok = Math.floor(Math.random() * 15);
+      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚`);
+      await setTimeout(1000);
+      for (let i = 1; Math.ceil(Math.random() * 65) > i; i++) {
+        if (mountainjp > 10000) {
+          mountainjp = 10000;
+        }
+        let jpup = MJPCJpUp(1);
+        (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n${jpup}`);
+        // const colecttext = mccpoks[rdpok];
+        await setTimeout(2500);
+      }
+      (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\n**IN!**`);
+      await setTimeout(1500);
+      const colecttext = mjpcpoks[rdpok];
+      if (colecttext != "MountainJP") {
+        (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext}を獲得しました！`);
+      }
+      else {
+        (await mjpcmsg).edit(`MountainJP : ${mountainjp}枚\nステーション1、${colecttext} (${mountainjp}枚)を獲得しました！`);
+      }
+      mountainjp = 1000;
+      maxmjpupct = 20;
+      mjpcplaying = false;
     }
     else {
       msg.reply("現在別の場所でマウンテンJPチャンスが行われています。");
+    }
+  }
+  if (msg.content === "cu!clearpprcroon") {
+    const embed = new Discord.MessageEmbed()
+    if (msg.author.id !== "524872647042007067" && msg.author.id !== "692980438729228329") {
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\nこのコマンドは一般利用者には実行できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+    else if (msg.author.id === "524872647042007067" || msg.author.id === "692980438729228329") {
+      await svmccdiv.clear();
+      await svmccdiv.clear();
+      embed.setAuthor({ name: "成功", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
+      embed.setDescription(`PPRクルーンデータを削除しました。`)
+      embed.setColor("#08B1FF")
+      await msg.channel.send({ embeds: [embed] });
     }
   }
 });
@@ -748,18 +845,26 @@ let mccpok7 = "50枚";
 let mccpok8 = "30枚";
 let mccpok9 = "30枚";
 let mccpok10 = "マウンテンJPC";
-let mccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","マウンテンJPC"];
-let sccpoks = ["30枚","30枚","50枚","30枚","30枚","30枚","50枚","30枚","30枚","ソルナJPC"];
+let mccpoks = ["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"];
+let sccpoks = ["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "ソルナJPC"];
 let mccplaying = false;
 let sccplaying = false;
 let mountainjp = 1000;
 let soljp = 1800;
 let lunajp = 1500;
-let mjpcpoks = ["100枚","100枚","150枚","200枚","100枚","150枚","100枚","200枚","100枚","200枚","300枚","150枚","CHANCE","CHANCE","MountainJP"];
-let sjpcpoks = ["50枚","50枚","100枚","200枚","50枚","50枚","100枚","50枚","100枚","200枚","300枚","50枚","CHANCE","CHANCE","SolJP","LunaJP"];
-let mjpcup = ["100枚","200枚","300枚","400枚","2倍"];
+let mjpcpoks = ["100枚", "100枚", "150枚", "200枚", "100枚", "150枚", "100枚", "200枚", "100枚", "200枚", "300枚", "150枚", "CHANCE", "CHANCE", "MountainJP"];
+let sjpcpoks = ["50枚", "50枚", "100枚", "200枚", "50枚", "50枚", "100枚", "50枚", "100枚", "200枚", "300枚", "50枚", "CHANCE", "CHANCE", "SolJP", "LunaJP"];
+let mjpcup = ["100枚", "200枚", "300枚", "400枚", "2倍"];
 let mjpcplaying = false;
 let sjpcplaying = false;
+/*
+if(savedb.get("pprmccdiv")){
+  
+}
+else{
+  savedb.set("pprmccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"]);
+}
+*/
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
@@ -831,43 +936,43 @@ client.on("interactionCreate", async (inter) => {
     coinstock -= 1;
     console.log(coinstock);
     const row = new Discord.MessageActionRow()
-    .addComponents(
-      new Discord.MessageButton()
-      .setCustomId("pusher1coininput")
-      .setLabel("1枚投入")
-      .setStyle("PRIMARY"),
-      new Discord.MessageButton()
-      .setCustomId("pusher1showcoin")
-      .setLabel(`${coinstock}枚`)
-      .setStyle("SECONDARY")
-      .setDisabled(true),
-      new Discord.MessageButton()
-      .setCustomId("pusher1exit")
-      .setLabel("終了")
-      .setStyle("DANGER")
-    );
-    inter.update({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]})
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId("pusher1coininput")
+          .setLabel("1枚投入")
+          .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+          .setCustomId("pusher1showcoin")
+          .setLabel(`${coinstock}枚`)
+          .setStyle("SECONDARY")
+          .setDisabled(true),
+        new Discord.MessageButton()
+          .setCustomId("pusher1exit")
+          .setLabel("終了")
+          .setStyle("DANGER")
+      );
+    inter.update({ content: `NORMAL MODE\nSatelliteChallenge : 0`, components: [row] })
   }
   if (inter.customId === "pusher1exit") {
     const row = new Discord.MessageActionRow()
-    .addComponents(
-      new Discord.MessageButton()
-      .setCustomId("pusher1coininput")
-      .setLabel("1枚投入")
-      .setStyle("PRIMARY")
-      .setDisabled(true),
-      new Discord.MessageButton()
-      .setCustomId("pusher1showcoin")
-      .setLabel(`${coinstock}枚`)
-      .setStyle("SECONDARY")
-      .setDisabled(true),
-      new Discord.MessageButton()
-      .setCustomId("pusher1exit")
-      .setLabel("終了")
-      .setStyle("DANGER")
-      .setDisabled(true)
-    );
-    inter.update({content:`NORMAL MODE\nSatelliteChallenge : 0`, components:[row]})
+      .addComponents(
+        new Discord.MessageButton()
+          .setCustomId("pusher1coininput")
+          .setLabel("1枚投入")
+          .setStyle("PRIMARY")
+          .setDisabled(true),
+        new Discord.MessageButton()
+          .setCustomId("pusher1showcoin")
+          .setLabel(`${coinstock}枚`)
+          .setStyle("SECONDARY")
+          .setDisabled(true),
+        new Discord.MessageButton()
+          .setCustomId("pusher1exit")
+          .setLabel("終了")
+          .setStyle("DANGER")
+          .setDisabled(true)
+      );
+    inter.update({ content: `NORMAL MODE\nSatelliteChallenge : 0`, components: [row] })
   }
 });
 
@@ -1198,59 +1303,56 @@ function SlotSpEmoji() {
   }
 }
 
-function MCCLevelUp(via)
-{
-  if(mccpoks[via] == "30枚"){
+function MCCLevelUp(via) {
+  if (mccpoks[via] == "30枚") {
     mccpoks[via] = "50枚";
   }
-  else if(mccpoks[via] == "50枚"){
+  else if (mccpoks[via] == "50枚") {
     mccpoks[via] = "80枚";
   }
-  else if(mccpoks[via] == "80枚"){
+  else if (mccpoks[via] == "80枚") {
     mccpoks[via] = "マウンテンJPC";
   }
-  else if(mccpoks[via] == "マウンテンJPC" && mccpoks.filter(val => val == "マウンテンJPC").length > 1){
+  else if (mccpoks[via] == "マウンテンJPC" && mccpoks.filter(val => val == "マウンテンJPC").length > 1) {
     mccpoks[via] = "30枚";
   }
 }
 
-function SCCLevelUp(via)
-{
-  if(sccpoks[via] == "30枚"){
+function SCCLevelUp(via) {
+  if (sccpoks[via] == "30枚") {
     sccpoks[via] = "50枚";
   }
-  else if(sccpoks[via] == "50枚"){
+  else if (sccpoks[via] == "50枚") {
     sccpoks[via] = "80枚";
   }
-  else if(sccpoks[via] == "80枚"){
+  else if (sccpoks[via] == "80枚") {
     sccpoks[via] = "ソルナJPC";
   }
-  else if(sccpoks[via] == "ソルナJPC" && sccpoks.filter(val => val == "ソルナJPC").length > 1){
+  else if (sccpoks[via] == "ソルナJPC" && sccpoks.filter(val => val == "ソルナJPC").length > 1) {
     sccpoks[via] = "30枚";
   }
 }
 
 let maxmjpupct = 20;
-function MJPCJpUp(via)
-{
+function MJPCJpUp(via) {
   const rdjpup = Math.ceil(Math.random() * maxmjpupct);
-  if(rdjpup >= 1 && rdjpup <= 8){
+  if (rdjpup >= 1 && rdjpup <= 8) {
     mountainjp += 100;
     return "100枚アップ！";
   }
-  else if(rdjpup >= 9 && rdjpup <= 13){
+  else if (rdjpup >= 9 && rdjpup <= 13) {
     mountainjp += 200;
     return "200枚アップ！";
   }
-  else if(rdjpup >= 14 && rdjpup <= 17){
+  else if (rdjpup >= 14 && rdjpup <= 17) {
     mountainjp += 300;
     return "300枚アップ！";
   }
-  else if(rdjpup >= 18 && rdjpup <= 19){
+  else if (rdjpup >= 18 && rdjpup <= 19) {
     mountainjp += 400;
     return "400枚アップ！";
   }
-  else if(rdjpup == 20){
+  else if (rdjpup == 20) {
     mountainjp = mountainjp * 2;
     maxmjpupct = 19;
     return "JP2倍！";
