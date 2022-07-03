@@ -39,7 +39,7 @@ let coinstock = 1000;
 
 client.on("ready", () => {
   console.log(`${new Date()}\nユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
-  client.user.setActivity("只今メンテナンス中です。動作が不安定になることがあります。", { type: "COMPETING" })
+  client.user.setActivity("現在はテストバージョンでの提供となります。", { type: "PLAYING" })
 })
 
 client.on("ready", async () => {
@@ -101,9 +101,9 @@ Prefixは \`cu!\`
 
 簡易コマンド編
 \`MCC\` : 仮想マウンテンクルーンチャレンジを実行します
-\`SCC\` : 仮想ソルナクルーンチャレンジを実行します
+\`SLCC\` : 仮想ソルナクルーンチャレンジを実行します
 \`MJPC\` : 仮想マウンテンJPチャンスを実行します
-\`SJPC\` : 仮想ソルナJPチャンスを実行します
+\`SLJPC\` : 仮想ソルナJPチャンスを実行します
 
 その他
 \`cu-thinking-board\` というチャンネルを作成すると、サーバー内でシンキングリアクションがされたときにそのチャンネルでボードが表示されます。
@@ -441,7 +441,7 @@ Prefixは \`cu!\`
     var pongmsg = msg.channel.send("Pong!");
     var pongtime = Date.now();
     await setTimeout(1000);
-    (await pongmsg).edit(`Pong!\n\nResponse : ${Date.now() - msg.createdTimestamp}ms\nWebSocket : ${client.ws.ping}ms`)
+    (await pongmsg).edit(`Pong!\n\nResponse : ${pongtime - msg.createdTimestamp}ms\nWebSocket : ${client.ws.ping}ms`)
   }
 
   if (msg.content === "cu!exit") {
@@ -745,7 +745,7 @@ Prefixは \`cu!\`
       msg.reply("現在別の場所でマウンテンクルーンチャレンジが行われています。");
     }
   }
-  if (msg.content === "SCC") {
+  if (msg.content === "SLCC") {
     if (!sccplaying) {
       sccplaying = true;
       if(await svsccdiv.get("pprsccdiv")){
@@ -833,6 +833,73 @@ Prefixは \`cu!\`
       await msg.channel.send({ embeds: [embed] });
     }
   }
+  if (msg.content === "CJPC" || msg.content === "ColorantJPC") {
+    if (!cjpcplaying) {
+      cjpcplaying = true;
+      var cjpcmsg = msg.channel.send(`ColorantJP : ${colorjp}\n\n0Win\n\n1  1  1`);
+      var pongtime = Date.now();
+      await setTimeout(1500);
+      await setTimeout(1000);
+      let cjpcwin = 0;
+      let jpclot1 = CJPCLot(1);
+      let jpclot2 = CJPCLot(2);
+      let jpclot3 = CJPCLot(3);
+      let jpstep1 = "";
+      let jpstep2 = "";
+      let jpstep3 = "";
+      let jpbool = true;
+      for (let i = 1; 34 > i; i++) {
+        jpclot1 = CJPCLot(1);
+        jpclot2 = CJPCLot(2);
+        jpclot3 = CJPCLot(3);
+        
+        if(jpclot1 === jpclot2 && jpclot2 === jpclot3){
+          cjpcwin += 50;
+        }
+        if(jpclot1 === "+15"){
+          cjpcwin += 15;
+        }
+        if(jpclot2 === "+15"){
+          cjpcwin += 15;
+        }
+        if(jpclot3 === "+15"){
+          cjpcwin += 15;
+        }
+        if((jpclot1 === "JP" && jpstep1 === "JP") || (jpclot2 === "JP" && jpstep2 === "JP") || (jpclot3 === "JP" && jpstep3 === "JP")){
+          cjpcwin += 500;
+        }
+        if(jpclot1 === "JP"){
+          jpstep1 = "JP";
+        }
+        if(jpclot2 === "JP"){
+          jpstep2 = "JP";
+        }
+        if(jpclot3 === "JP"){
+          jpstep3 = "JP";
+        }
+        if(jpstep1 === "JP" && jpstep2 === "JP" && jpstep3 === "JP" && jpbool){
+          cjpcwin += colorjp;
+          jpbool = false;
+        }
+        await setTimeout(1000);
+        (await cjpcmsg).edit(`ColorantJP : ${colorjp}\n\n${cjpcwin}Win\n\n${jpclot1}  ${jpclot2}  ${jpclot3}\n${jpstep1}  ${jpstep2}  ${jpstep3}`);
+        // const colecttext = mccpoks[rdpok];
+      }
+      await setTimeout(1000);
+      (await cjpcmsg).edit(`ColorantJP : ${colorjp}\n\n${cjpcwin}Win\n\n${jpclot1}  ${jpclot2}  ${jpclot3}\n${jpstep1}  ${jpstep2}  ${jpstep3}`);
+      await setTimeout(2000);
+      if(jpstep1 === "JP" && jpstep2 === "JP" && jpstep3 === "JP"){
+        (await cjpcmsg).edit(`ColorantJP : ${colorjp}\n\n${cjpcwin}Win\n\n${jpclot1}  ${jpclot2}  ${jpclot3}\n${jpstep1}  ${jpstep2}  ${jpstep3}\n\nColorantJP\n${colorjp}`);
+      }
+      else{
+        (await cjpcmsg).edit(`ColorantJP : ${colorjp}\n\n${cjpcwin}Win\n\n${jpclot1}  ${jpclot2}  ${jpclot3}\n${jpstep1}  ${jpstep2}  ${jpstep3}\n\nResult\n${cjpcwin}`);
+      }
+      cjpcplaying = false;
+    }
+    else {
+      msg.reply("現在別の場所でColorantJPチャンスが行われています。");
+    }
+  }
 });
 
 let mccpok1 = "30枚";
@@ -857,6 +924,8 @@ let sjpcpoks = ["50枚", "50枚", "100枚", "200枚", "50枚", "50枚", "100枚"
 let mjpcup = ["100枚", "200枚", "300枚", "400枚", "2倍"];
 let mjpcplaying = false;
 let sjpcplaying = false;
+let cjpcplaying = false;
+let colorjp = 10000;
 /*
 if(savedb.get("pprmccdiv")){
   
@@ -1356,6 +1425,39 @@ function MJPCJpUp(via) {
     mountainjp = mountainjp * 2;
     maxmjpupct = 19;
     return "JP2倍！";
+  }
+}
+
+let maxcjpct = 34;
+function CJPCLot(via) {
+  const rdjpup = Math.ceil(Math.random() * 254);
+  if (rdjpup >= 1 && rdjpup <= 40) {
+    // mountainjp += 100;
+    return "1";
+  }
+  else if (rdjpup >= 41 && rdjpup <= 80) {
+    // mountainjp += 200;
+    return "2";
+  }
+  else if (rdjpup >= 81 && rdjpup <= 120) {
+    // mountainjp += 300;
+    return "3";
+  }
+  else if (rdjpup >= 121 && rdjpup <= 160) {
+    // mountainjp += 400;
+    return "4";
+  }
+  else if (rdjpup >= 161 && rdjpup <= 200) {
+    // mountainjp += 400;
+    return "5";
+  }
+  else if (rdjpup >= 201 && rdjpup <= 250) {
+    // mountainjp += 400;
+    return "+15";
+  }
+  else if (rdjpup >= 251 && rdjpup <= 254) {
+    // mountainjp += 400;
+    return "JP";
   }
 }
 
