@@ -1129,7 +1129,12 @@ client.on("interactionCreate", async (inter) => {
   if (inter.customId === "bugreportconfirm") {
     inter.reply({content:"不具合報告へのご協力ありがとうございます。\n内容が開発チームに送られました。", ephemeral:true});
     const field = inter.fields;
-    client.channels.cache.get("993040671407616020").send(`${inter.member.displayName}#${inter.user.discriminator}(${inter.user.id}) さんからの不具合報告です。\n\n【対象のゲーム】 : ${field.getTextInputValue("bugreportcomp1")}\n【アプリのバージョン】 : ${field.getTextInputValue("bugreportcomp2")}\n【対象のシーン】 : ${field.getTextInputValue("bugreportcomp3")}\n【不具合を発生させるのに必要な操作・反応】 : ${field.getTextInputValue("bugreportcomp4")}\n【不具合の詳細】 : ${field.getTextInputValue("bugreportcomp5")}`);
+    let sendmsg = `${inter.member.displayName}#${inter.user.discriminator}(${inter.user.id}) さんからの不具合報告です。\n\n【対象のゲーム】 : ${field.getTextInputValue("bugreportcomp1")}\n【アプリのバージョン】 : ${field.getTextInputValue("bugreportcomp2")}\n【対象のシーン】 : ${field.getTextInputValue("bugreportcomp3")}\n【不具合を発生させるのに必要な操作・反応】 : ${field.getTextInputValue("bugreportcomp4")}\n【不具合の詳細】 : ${field.getTextInputValue("bugreportcomp5")}`;
+    let sendmsg2 = sendmsg;
+    if(sendmsg.length > 2000){
+      sendmsg2 = `${sendmsg.substring(0,1996)}...`;
+    }
+    client.channels.cache.get("993040671407616020").send(`${sendmsg2}`);
   }
   if (inter.customId === "howbugreport") {
     inter.reply({content:`【対象のゲーム】・
