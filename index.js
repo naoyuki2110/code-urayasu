@@ -900,6 +900,41 @@ Prefixは \`cu!\`
       msg.reply("現在別の場所でColorantJPチャンスが行われています。");
     }
   }
+  if (msg.content === "cu!bugreportbtn") {
+    if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+    const acrow = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageButton()
+					.setCustomId("bugreportbtn")
+					.setLabel("不具合報告をする")
+					.setStyle('PRIMARY'),
+        new Discord.MessageButton()
+					.setCustomId("howbugreport")
+					.setLabel("書き方を確認")
+					.setStyle('SECONDARY'),
+	    );
+    await msg.channel.send({content:"【不具合報告へのご協力ありがとうございます】\n下の「不具合報告をする」より、表示されたモーダルに必要事項を記入して送信してください。\n\n__**※このシステムはベータ版であり、今後仕様を変更する場合があります。**__", components:[acrow]});
+  }
+  else{
+    const embed = new Discord.MessageEmbed();
+    embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+    embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+    embed.addField("エラーコード", "FOR_BIDDEN", true)
+    embed.setColor("#EB3871")
+    await msg.channel.send({ embeds: [embed] });
+  }
+  }
+  if (msg.content === "cu!delerrmsg") {
+    if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329)){
+    
+      var fetmsg = await msg.channel.messages.fetch({limit:7,before:993046115580645446});
+      var fil = fetmsg.filter(m => m.author.id == 754190285382352920);
+      msg.channel.bulkDelete(fil);
+      //var succmsg = await msg.channel.send("完了");
+      //setTimeout(2000);
+      //succmsg.delete();
+  }
+  }
 });
 
 let mccpok1 = "30枚";
@@ -1042,6 +1077,74 @@ client.on("interactionCreate", async (inter) => {
           .setDisabled(true)
       );
     inter.update({ content: `NORMAL MODE\nSatelliteChallenge : 0`, components: [row] })
+  }
+  if (inter.customId === "bugreportbtn") {
+    const modal = new Discord.Modal()
+			.setCustomId('bugreportconfirm')
+			.setTitle('不具合報告フォーム');
+    const acrow1 = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp1")
+					.setLabel("対象のゲーム")
+					.setStyle('SHORT')
+          .setPlaceholder("（例）Colorant Echo"),
+      );
+      const acrow2 = new Discord.MessageActionRow()
+			.addComponents(
+        new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp2")
+					.setLabel("アプリのバージョン")
+					.setStyle('SHORT')
+          .setPlaceholder("（例）Ver.1.2.5"),
+      );
+      const acrow3 = new Discord.MessageActionRow()
+			.addComponents(
+        new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp3")
+					.setLabel("対象のシーン")
+					.setStyle('SHORT')
+          .setPlaceholder("（例）Tenth Green"),
+      );
+      const acrow4 = new Discord.MessageActionRow()
+			.addComponents(
+        new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp4")
+					.setLabel("不具合を発生させるのに必要な操作・反応")
+					.setStyle('SHORT')
+          .setPlaceholder("（例）GreenChallengeに突入する"),
+      );
+      const acrow5 = new Discord.MessageActionRow()
+			.addComponents(
+        new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp5")
+					.setLabel("不具合の詳細")
+					.setStyle('PARAGRAPH')
+          .setPlaceholder("（例）稀にクルーン上のボールが止まってしまい、進行不可能になる。"),
+	    );
+    modal.addComponents(acrow1,acrow2,acrow3,acrow4,acrow5);
+    //await inter.reply({ content: `${inter.user.username}さん、こんにちは！`, ephemeral: true });
+    inter.showModal(modal);
+  }
+  if (inter.customId === "bugreportconfirm") {
+    inter.reply({content:"不具合報告へのご協力ありがとうございます。\n内容が開発チームに送られました。", ephemeral:true});
+    const field = inter.fields;
+    client.channels.cache.get("993040671407616020").send(`${inter.member.displayName}#${inter.user.discriminator}(${inter.user.id}) さんからの不具合報告です。\n\n【対象のゲーム】 : ${field.getTextInputValue("bugreportcomp1")}\n【アプリのバージョン】 : ${field.getTextInputValue("bugreportcomp2")}\n【対象のシーン】 : ${field.getTextInputValue("bugreportcomp3")}\n【不具合を発生させるのに必要な操作・反応】 : ${field.getTextInputValue("bugreportcomp4")}\n【不具合の詳細】 : ${field.getTextInputValue("bugreportcomp5")}`);
+  }
+  if (inter.customId === "howbugreport") {
+    inter.reply({content:`【対象のゲーム】・
+　「ブロック崩し3D」
+　「ボタポッチ」
+　「スペースプッシャー」
+　「CubeAvoid」
+　「Colorant Echo」
+から選択してください。
+
+【アプリのバージョン】・
+各アプリのタイトル画面の右下に書いてあるバージョンを記入してください。
+
+【対象のシーン】・
+CubeAvoidなら「ステージ２」や「ステージ１クリア画面」、Colorant Echoなら「Tenth Green」「ColorantJPC」など`, ephemeral:true});
   }
 });
 
