@@ -15,8 +15,10 @@ const Keyv = require("keyv");
 
 const svmccdiv = new Keyv("sqlite://sqlite.db",{table:"svmccdiv"});
 const svsccdiv = new Keyv("sqlite://sqlite.db",{table:"svsccdiv"});
+const svpprccdiv = new Keyv("sqlite://sqlite.db");
 svmccdiv.on("error", err => console.log("Keyv error:",err));
 svsccdiv.on("error", err => console.log("Keyv error:",err));
+svpprccdiv.on("error", err => console.log("Keyv error:",err));
 
 // BOTプレフィックス宣言
 const prefix = "cu!";
@@ -62,6 +64,8 @@ client.on("ready", async () => {
   };
   await client.application.commands.set([usshdata, svshdata, chshdata, uscmdata]);
   console.log(`すべてのアプリケーションコマンドを作成しました。`);
+  console.log(await svpprccdiv.get("pprmccdiv"));
+  console.log(await svpprccdiv.get("pprsccdiv"));
 })
 
 // Auto ThreadChannelJoin
@@ -713,14 +717,14 @@ Prefixは \`cu!\`
   if (msg.content === "MCC") {
     if (!mccplaying) {
       mccplaying = true;
-      if(await svmccdiv.get("pprmccdiv")){
+      if(await svpprccdiv.get("pprmccdiv")){
   
       }
       else{
-        await svmccdiv.set("pprmccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"]);
+        await svpprccdiv.set("pprmccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"]);
       }
-      mccpoks = await svmccdiv.get("pprmccdiv");
-      let svmccpoks = await svmccdiv.get("pprmccdiv");
+      mccpoks = await svpprccdiv.get("pprmccdiv");
+      let svmccpoks = await svpprccdiv.get("pprmccdiv");
       console.log(svmccpoks);
       var mccmsg = msg.channel.send(`マウンテンクルーンチャレンジ！スタート！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`);
       var pongtime = Date.now();
@@ -730,8 +734,8 @@ Prefixは \`cu!\`
       (await mccmsg).edit(`ステーション1、${svmccpoks[rdpok]}を獲得しました！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`)
       const colecttext = mccpoks[rdpok];
       MCCLevelUp(rdpok);
-      await svmccdiv.set("pprmccdiv",mccpoks);
-      svmccpoks = await svmccdiv.get("pprmccdiv");
+      await svpprccdiv.set("pprmccdiv",mccpoks);
+      svmccpoks = await svpprccdiv.get("pprmccdiv");
       await setTimeout(2000);
       if (colecttext != "マウンテンJPC") {
         (await mccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${svmccpoks[0]}　${svmccpoks[1]}　${svmccpoks[2]}　${svmccpoks[3]}　${svmccpoks[4]}　${svmccpoks[5]}　${svmccpoks[6]}　${svmccpoks[7]}　${svmccpoks[8]}　${svmccpoks[9]}`)
@@ -748,14 +752,14 @@ Prefixは \`cu!\`
   if (msg.content === "SLCC") {
     if (!sccplaying) {
       sccplaying = true;
-      if(await svsccdiv.get("pprsccdiv")){
+      if(await svpprccdiv.get("pprsccdiv")){
   
       }
       else{
-        await svsccdiv.set("pprsccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "ソルナJPC"]);
+        await svpprccdiv.set("pprsccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "ソルナJPC"]);
       }
-      sccpoks = await svsccdiv.get("pprsccdiv");
-      let svsccpoks = await svsccdiv.get("pprsccdiv");
+      sccpoks = await svpprccdiv.get("pprsccdiv");
+      let svsccpoks = await svpprccdiv.get("pprsccdiv");
       var sccmsg = msg.channel.send(`ソルナクルーンチャレンジ！スタート！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`);
       var pongtime = Date.now();
       await setTimeout(1500);
@@ -764,8 +768,8 @@ Prefixは \`cu!\`
       (await sccmsg).edit(`ステーション1、${svsccpoks[rdpok]}を獲得しました！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`)
       const colecttext = sccpoks[rdpok];
       SCCLevelUp(rdpok);
-      await svsccdiv.set("pprsccdiv",sccpoks);
-      svsccpoks = await svsccdiv.get("pprsccdiv");
+      await svpprccdiv.set("pprsccdiv",sccpoks);
+      svsccpoks = await svpprccdiv.get("pprsccdiv");
       await setTimeout(2000);
       if (colecttext != "ソルナJPC") {
         (await sccmsg).edit(`ステーション1、${colecttext}を獲得しました！\nポケットレベルアップ！\n\n${svsccpoks[0]}　${svsccpoks[1]}　${svsccpoks[2]}　${svsccpoks[3]}　${svsccpoks[4]}　${svsccpoks[5]}　${svsccpoks[6]}　${svsccpoks[7]}　${svsccpoks[8]}　${svsccpoks[9]}`)
@@ -825,8 +829,8 @@ Prefixは \`cu!\`
       await msg.channel.send({ embeds: [embed] });
     }
     else if (msg.author.id === "524872647042007067" || msg.author.id === "692980438729228329") {
-      await svmccdiv.clear();
-      await svmccdiv.clear();
+      await svpprccdiv.delete("pprmccdiv");
+      await svpprccdiv.delete("pprsccdiv");
       embed.setAuthor({ name: "成功", iconURL: "https://cdn.discordapp.com/emojis/919051457557327903.png?size=96" })
       embed.setDescription(`PPRクルーンデータを削除しました。`)
       embed.setColor("#08B1FF")
