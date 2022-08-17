@@ -20,6 +20,8 @@ svmccdiv.on("error", err => console.log("Keyv error:",err));
 svsccdiv.on("error", err => console.log("Keyv error:",err));
 svpprccdiv.on("error", err => console.log("Keyv error:",err));
 
+const puppeteer = require("puppeteer");
+
 // BOTプレフィックス宣言
 const prefix = "cu!";
 
@@ -39,10 +41,46 @@ let numgamemax = "100";
 
 let coinstock = 1000;
 
-client.on("ready", () => {
+let browser;
+let page;
+let page2;
+let pupterrcount = 0;
+
+(async() => {
+
+  try{
+  browser = await puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']});
+    page = await browser.newPage();
+      
+    await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+    page2 = await browser.newPage();
+    //await browser.close();
+  }
+  catch(err){
+    pupterrcount++;
+    console.log("puppeteer起動エラー");
+    if(pupterrcount > 3){
+      console.log("puppeteer起動エラー。プロセスを終了します");
+      process.exit();
+    }
+  }
+})();
+
+client.on("ready", async () => {
+  console.log(`${[await client.guilds.cache.map((guilds) => guilds.name + " : " + guilds.id)]}`);
   console.log(`${new Date()}\nユーザー名 : ${client.user.tag} でログインが完了しました。\nユーザーID : ${client.user.id}`);
   client.user.setActivity("現在はテストバージョンでの提供となります。", { type: "PLAYING" })
 })
+/*
+puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+  const page = await browser.newPage();
+  await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+  var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+  var data = await (await item[0].getProperty('textContent')).jsonValue();
+  console.log(data);
+  browser.close();
+});
+*/
 
 client.on("ready", async () => {
   const usshdata = {
@@ -52,6 +90,15 @@ client.on("ready", async () => {
   const svshdata = {
     name: "server",
     description: "サーバーの情報を表示します",
+  };
+  const svshdata2 = {
+    name: "server2",
+    description: "サーバーの情報を表示します",
+    options:[{
+      type:"STRING",
+      name:"serverid",
+      description:"情報を表示するサーバーのID",
+    }]
   };
   const chshdata = {
     name: "channel",
@@ -63,9 +110,10 @@ client.on("ready", async () => {
     description: "",
   };
   await client.application.commands.set([usshdata, svshdata, chshdata, uscmdata]);
+  await client.application.commands.set([svshdata2], "666188622575173652");
   console.log(`すべてのアプリケーションコマンドを作成しました。`);
-  console.log(await svpprccdiv.get("pprmccdiv"));
-  console.log(await svpprccdiv.get("pprsccdiv"));
+  //console.log(await svpprccdiv.get("pprmccdiv"));
+  //console.log(await svpprccdiv.get("pprsccdiv"));
 })
 
 // Auto ThreadChannelJoin
@@ -108,6 +156,7 @@ Prefixは \`cu!\`
 \`SLCC\` : 仮想ソルナクルーンチャレンジを実行します
 \`MJPC\` : 仮想マウンテンJPチャンスを実行します
 \`SLJPC\` : 仮想ソルナJPチャンスを実行します
+\`CJPC / ColorantJPC\` : 仮想ColorantJPチャンスを実行します
 
 その他
 \`cu-thinking-board\` というチャンネルを作成すると、サーバー内でシンキングリアクションがされたときにそのチャンネルでボードが表示されます。
@@ -424,6 +473,41 @@ Prefixは \`cu!\`
         else if (args[1] !== "local") {
           await msg.channel.send(`引数が不正です。`);
         }
+      }
+      else if (cmd === "pnr2bbsres") {
+        if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+          const embed = new Discord.MessageEmbed()
+			      .setTitle("BBSレスポンス情報")
+            .setDescription("取得中です...");
+          let fmsg = await msg.reply({embeds:[embed], allowedMentions:{repliedUser:false}});
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      var data = await (await item[0].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[0].getProperty('href')).jsonValue();
+      var data3 = await (await item2[0].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[1].getProperty('textContent')).jsonValue();
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("BBSレスポンス情報")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:"0"});
+      fmsg.edit({embeds:[nembed]});
+      //page.close();
+      var pages = await browser.pages();
+      console.log(pages.length);
+    //});
+    }
+    else{
+      const embed = new Discord.MessageEmbed();
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
       }
     }
     catch (error) {
@@ -939,6 +1023,151 @@ Prefixは \`cu!\`
       //succmsg.delete();
   }
   }
+  if (msg.content === "cu!bugreportbtndev") {
+    if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+    const acrow = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageButton()
+					.setCustomId("bugreportbtndev")
+					.setLabel("不具合報告をする")
+					.setStyle('PRIMARY'),
+        new Discord.MessageButton()
+					.setCustomId("howbugreport")
+					.setLabel("書き方を確認")
+					.setStyle('SECONDARY'),
+	    );
+      await msg.channel.send({content:"【不具合報告へのご協力ありがとうございます】\n下の「不具合報告をする」より、表示されたモーダルに必要事項を記入して送信してください。\n\n__**※このシステムはベータ版であり、今後仕様を変更する場合があります。**__", components:[acrow]});
+    }
+    else{
+      const embed = new Discord.MessageEmbed();
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+  }
+  if (msg.content === "cu!pnr2bbs") {
+    //console.log(msg.nonce);
+    if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+    const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription("取得中です...");
+      let fmsg = await msg.reply({embeds:[embed], allowedMentions:{repliedUser:false}});
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      var data = await (await item[0].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[0].getProperty('href')).jsonValue();
+      var data3 = await (await item2[0].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[1].getProperty('textContent')).jsonValue();
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:"0"});
+      const acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      fmsg.edit({embeds:[nembed], components:[acrow]});
+      //page.close();
+      var pages = await browser.pages();
+      console.log(pages.length);
+    //});
+    }
+    else{
+      const embed = new Discord.MessageEmbed();
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+  }
+  if (msg.content === "cu!pnr2bbscs") {
+    //console.log(msg.nonce);
+    if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+    const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription("取得中です...");
+      let fmsg = await msg.reply("フィルタ変更中...");
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.select("#threadType", "3");
+      fmsg.edit("完了")
+      /*
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      var data = await (await item[0].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[0].getProperty('href')).jsonValue();
+      var data3 = await (await item2[0].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[1].getProperty('textContent')).jsonValue();
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:"0"});
+      const acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      fmsg.edit({embeds:[nembed], components:[acrow]});
+      //page.close();
+      var pages = await browser.pages();
+      console.log(pages.length);
+    //});*/
+    }
+    else{
+      const embed = new Discord.MessageEmbed();
+      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+      embed.addField("エラーコード", "FOR_BIDDEN", true)
+      embed.setColor("#EB3871")
+      await msg.channel.send({ embeds: [embed] });
+    }
+  }
 });
 
 let mccpok1 = "30枚";
@@ -973,6 +1202,10 @@ else{
   savedb.set("pprmccdiv",["30枚", "30枚", "50枚", "30枚", "30枚", "30枚", "50枚", "30枚", "30枚", "マウンテンJPC"]);
 }
 */
+
+//var item;
+//var item2;
+//var item3;
 
 client.on("interactionCreate", async (inter) => {
   if (inter.customId === "testBtn") {
@@ -1010,6 +1243,45 @@ client.on("interactionCreate", async (inter) => {
       .addField("メンバー数", `${inter.guild.memberCount}`, true)
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
+  }
+  else if (inter.commandName === "server2") {
+    if(inter.options.getString("serverid") === null){
+      const date = new Date(inter.guild.createdTimestamp);
+      const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+      const embed = new Discord.MessageEmbed()
+        .setTitle("サーバー情報")
+        .setThumbnail(inter.guild.iconURL({ format: "png" }))
+        .setFooter({ text: `${datestr}にサーバーが作成されました。` })
+        .addField("サーバー名", inter.guild.name, true)
+        .addField("サーバーID", inter.guild.id, true)
+        .addField("メンバー数", `${inter.guild.memberCount}`, true)
+        .setColor("#05E2FF")
+      await inter.reply({ embeds: [embed], ephemeral: false });
+    }
+    else{
+      if(!client.guilds.cache.get(inter.options.getString("serverid"))){
+        const embed = new Discord.MessageEmbed()
+        embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+        embed.setDescription("サーバーが見つかりませんでした。\nオプションの値を見直してみてください。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+        embed.addField("エラーコード", "NOT_FOUND", true)
+        embed.setColor("#EB3871")
+        await inter.reply({ embeds: [embed] });
+      }
+      else{
+        const fetguild = client.guilds.cache.get(inter.options.getString("serverid"));
+        const date = new Date(fetguild.createdTimestamp);
+        const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+        const embed = new Discord.MessageEmbed()
+          .setTitle("サーバー情報")
+          .setThumbnail(fetguild.iconURL({ format: "png" }))
+          .setFooter({ text: `${datestr}にサーバーが作成されました。` })
+          .addField("サーバー名", fetguild.name, true)
+          .addField("サーバーID", fetguild.id, true)
+          .addField("メンバー数", `${fetguild.memberCount}`, true)
+          .setColor("#05E2FF")
+        await inter.reply({ embeds: [embed], ephemeral: false });
+      }
+    }
   }
   else if (inter.commandName === "channel") {
     const date = new Date(inter.channel.createdTimestamp);
@@ -1155,10 +1427,544 @@ client.on("interactionCreate", async (inter) => {
 【対象のシーン】・
 CubeAvoidなら「ステージ２」や「ステージ１クリア画面」、Colorant Echoなら「Tenth Green」「ColorantJPC」など`, ephemeral:true});
   }
+  if (inter.customId === "bugreportbtndev") {
+    const modal = new Discord.Modal()
+			.setCustomId('bugreportconfirmdev')
+			.setTitle('不具合報告フォーム（Dev）');
+    const acrow1 = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageSelectMenu()
+					.setCustomId("bugreportcomp1dev")
+					.setOptions([
+            {
+              label:"BlockBreak3D",
+              value:"a",
+            },
+            {
+              label:"BotaPochi",
+              value:"b",
+            },
+            {
+              label:"SpacePusher",
+              value:"c",
+            }
+          ])
+          .setPlaceholder("（例）Colorant Echo"),
+      );
+      const acrow2 = new Discord.MessageActionRow()
+			.addComponents(
+        new Discord.TextInputComponent()
+					.setCustomId("bugreportcomp2dev")
+					.setLabel("アプリのバージョン")
+					.setStyle('SHORT')
+          .setPlaceholder("（例）Ver.1.2.5"),
+      );
+    modal.addComponents(acrow1,acrow2);
+    //await inter.reply({ content: `${inter.user.username}さん、こんにちは！`, ephemeral: true });
+    inter.showModal(modal);
+  }
+  if (inter.customId === "bugreportconfirmdev") {
+    inter.reply({content:"不具合報告へのご協力ありがとうございます。\n内容が開発チームに送られました。", ephemeral:true});
+    const field = inter.fields;
+    console.log(field.components[1].components);
+    let sendmsg = `Devバージョンです。\n${inter.member.displayName}#${inter.user.discriminator}(${inter.user.id}) さんからの不具合報告です。\n\n【対象のゲーム】 : ${field.getField("bugreportcomp1dev").value}\n【アプリのバージョン】 : ${field.getTextInputValue("bugreportcomp2dev")}`;
+    let sendmsg2 = sendmsg;
+    if(sendmsg.length > 2000){
+      sendmsg2 = `${sendmsg.substring(0,1996)}...`;
+    }
+    client.channels.cache.get("993040671407616020").send(`${sendmsg2}`);
+  }
+  if (inter.customId === "pnr2bbsnext") {
+    //console.log(inter.user.id);
+    //console.log(await inter.message.fetchReference().then(msg => msg.author.id))
+    if((inter.createdTimestamp - inter.message.editedTimestamp) <= (30 * 1000) && inter.user.id === await inter.message.fetchReference().then(msg => msg.author.id)){
+      var noncint = parseInt(inter.message.embeds[0].footer.text);
+      const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`取得中です...`);
+      const acrow1 = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      await inter.update({embeds:[embed], components:[acrow1]});
+      //console.log(inter.message.nonce)
+      //await inter.deferUpdate();
+    
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      //var noncint = parseInt(inter.message.embeds[0].footer.text);
+      console.log(noncint)
+      var data = await (await item[noncint+1].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[noncint+1].getProperty('href')).jsonValue();
+      var data3 = await (await item2[(noncint*2)+2].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[(noncint*2)+3].getProperty('textContent')).jsonValue();
+      
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:(noncint+1).toString()});
+      let acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      if((noncint+1) >= (item.length-1)){
+        acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      }
+      inter.editReply({embeds:[nembed], components:[acrow]});
+      //page.close();
+    //});
+    }
+  }
+  if (inter.customId === "pnr2bbsprev") {
+    if((inter.createdTimestamp - inter.message.editedTimestamp) <= (30 * 1000) && inter.user.id === await inter.message.fetchReference().then(msg => msg.author.id)){
+      var noncint = parseInt(inter.message.embeds[0].footer.text);
+      const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`取得中です...`);
+      const acrow1 = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      await inter.update({embeds:[embed], components:[acrow1]});
+      //console.log(inter.message.nonce)
+      //await inter.deferUpdate();
+    
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      //var noncint = parseInt(inter.message.embeds[0].footer.text);
+      console.log(noncint)
+      var data = await (await item[noncint-1].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[noncint-1].getProperty('href')).jsonValue();
+      var data3 = await (await item2[(noncint*2)-2].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[(noncint*2)-1].getProperty('textContent')).jsonValue();
+      
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:(noncint-1).toString()});
+      let acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      if((noncint-1) <= 0){
+        acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      }
+      inter.editReply({embeds:[nembed], components:[acrow]});
+      //page.close();
+    //});
+    }
+  }
+  if (inter.customId === "pnr2bbslast") {
+    //console.log(inter.user.id);
+    //console.log(await inter.message.fetchReference().then(msg => msg.author.id))
+    if((inter.createdTimestamp - inter.message.editedTimestamp) <= (30 * 1000) && inter.user.id === await inter.message.fetchReference().then(msg => msg.author.id)){
+      var noncint = parseInt(inter.message.embeds[0].footer.text);
+      const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`取得中です...`);
+      const acrow1 = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      await inter.update({embeds:[embed], components:[acrow1]});
+      //console.log(inter.message.nonce)
+      //await inter.deferUpdate();
+    
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      //var noncint = parseInt(inter.message.embeds[0].footer.text);
+      noncint = item.length-2;
+      console.log(noncint)
+      var data = await (await item[noncint+1].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[noncint+1].getProperty('href')).jsonValue();
+      var data3 = await (await item2[(noncint*2)+2].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[(noncint*2)+3].getProperty('textContent')).jsonValue();
+      
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:(noncint+1).toString()});
+      let acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      inter.editReply({embeds:[nembed], components:[acrow]});
+      //page.close();
+    //});
+    }
+  }
+  if (inter.customId === "pnr2bbsfirst") {
+    if((inter.createdTimestamp - inter.message.editedTimestamp) <= (30 * 1000) && inter.user.id === await inter.message.fetchReference().then(msg => msg.author.id)){
+      var noncint = 1;
+      const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`取得中です...`);
+      const acrow1 = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      await inter.update({embeds:[embed], components:[acrow1]});
+      //console.log(inter.message.nonce)
+      //await inter.deferUpdate();
+    
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      
+      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      //var noncint = parseInt(inter.message.embeds[0].footer.text);
+      console.log(noncint)
+      var data = await (await item[noncint-1].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[noncint-1].getProperty('href')).jsonValue();
+      var data3 = await (await item2[(noncint*2)-2].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[(noncint*2)-1].getProperty('textContent')).jsonValue();
+      
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:(noncint-1).toString()});
+      let acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      inter.editReply({embeds:[nembed], components:[acrow]});
+      //page.close();
+    //});
+    }
+  }
+  if (inter.customId === "pnr2bbsreload") {
+    if((inter.createdTimestamp - inter.message.editedTimestamp) <= (30 * 1000) && inter.user.id === await inter.message.fetchReference().then(msg => msg.author.id)){
+      var noncint = 1;
+      const embed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`取得中です...`);
+      const acrow1 = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+      )
+      await inter.update({embeds:[embed], components:[acrow1]});
+      //console.log(inter.message.nonce)
+      //await inter.deferUpdate();
+    
+      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
+      //const page = await browser.newPage();
+      
+      await page.reload({waitUntil:"networkidle2"});
+      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
+      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
+      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
+      //var noncint = parseInt(inter.message.embeds[0].footer.text);
+      console.log(noncint)
+      var data = await (await item[noncint-1].getProperty('textContent')).jsonValue();
+      var data2 = await (await item3[noncint-1].getProperty('href')).jsonValue();
+      var data3 = await (await item2[(noncint*2)-2].getProperty('textContent')).jsonValue();
+      var data4 = await (await item2[(noncint*2)-1].getProperty('textContent')).jsonValue();
+      
+      const nembed = new Discord.MessageEmbed()
+			.setTitle("最新BBS")
+      .setDescription(`[${data}](${data2})${data3}${data4}`)
+      .setFooter({text:(noncint-1).toString()});
+      let acrow = new Discord.MessageActionRow()
+      .addComponents(
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsfirst")
+        .setLabel("最初へ")
+        .setStyle("SECONDARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsprev")
+        .setLabel("前へ")
+        .setStyle("PRIMARY")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsreload")
+        .setLabel("更新")
+        .setStyle("SUCCESS")
+        .setDisabled(true),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbsnext")
+        .setLabel("次へ")
+        .setStyle("PRIMARY"),
+        new Discord.MessageButton()
+        .setCustomId("pnr2bbslast")
+        .setLabel("最後へ")
+        .setStyle("SECONDARY"),
+      )
+      inter.editReply({embeds:[nembed], components:[acrow]});
+      //page.close();
+    //});
+    }
+  }
 });
 
 // ThinkingBoard
 client.on("messageReactionAdd", (reaction, user) => {
+  console.log(`リアクション追加`);
   if (reaction.emoji.name === "\u{1f914}") {
     console.log(`シンキングリアクションの追加\nサーバー : ${reaction.message.guild}\nチャンネル : ${reaction.message.channel}\nユーザー : ${user.tag}\n---------------------`)
     // if(reaction.message.guildId === reaction.message.guild)
