@@ -44,6 +44,7 @@ let coinstock = 1000;
 let browser;
 let page;
 let page2;
+let page3;
 let pupterrcount = 0;
 
 (async() => {
@@ -54,6 +55,7 @@ let pupterrcount = 0;
       
     await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
     page2 = await browser.newPage();
+    page3 = await browser.newPage();
     //await browser.close();
   }
   catch(err){
@@ -475,48 +477,83 @@ Prefixは \`cu!\`
         }
       }
       else if (cmd === "pnr2bbsres") {
-        if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+        //if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+          if(!args[1].startsWith("https://pnr2.patolesoft.net/bbs.html?Mode=View&ThreadID=")){
+            throw new Error("Not a PNR2 site.")
+          }
+          const resnum = parseInt(args[2]);
           const embed = new Discord.MessageEmbed()
 			      .setTitle("BBSレスポンス情報")
             .setDescription("取得中です...");
           let fmsg = await msg.reply({embeds:[embed], allowedMentions:{repliedUser:false}});
-      //puppeteer.launch({ args: ['--no-sandbox', '--disabled-setuid-sandbox']}).then(async browser => {
-      //const page = await browser.newPage();
-      //await page.goto("https://pnr2.patolesoft.net/bbs.html",{waitUntil:"networkidle2"});
-      var item = await page.$$("body > #thread > div > div > div > div > .card-header");
-      var item2 = await page.$$("body > #thread > div > div > div > div > .card-body");
-      var item3 = await page.$$("body > #thread > div > div > div > div > .card-header > a");
-      var data = await (await item[0].getProperty('textContent')).jsonValue();
-      var data2 = await (await item3[0].getProperty('href')).jsonValue();
-      var data3 = await (await item2[0].getProperty('textContent')).jsonValue();
-      var data4 = await (await item2[1].getProperty('textContent')).jsonValue();
-      const nembed = new Discord.MessageEmbed()
-			.setTitle("BBSレスポンス情報")
-      .setDescription(`[${data}](${data2})${data3}${data4}`)
-      .setFooter({text:"0"});
-      fmsg.edit({embeds:[nembed]});
+          await page2.goto(args[1],{waitUntil:"networkidle0"});
+          var item = await page2.$$("body > #thread > div > div > div > h4");
+          var item2 = await page2.$$("body > #thread > div > div > div > div > div > div");
+          var item3 = await page2.$$("body > #thread > div > div > div > div > div > div > div > .h6");
+          var item4 = await page2.$$("body > #thread > div > div > div > div > div > div > div > img");
+          var data = await (await item[0].getProperty('textContent')).jsonValue();
+          var data2 = await (await item2[((resnum-1)*3)+1].getProperty('textContent')).jsonValue();
+          var data2_2 = await (await item3[(resnum-1)].getProperty('textContent')).jsonValue();
+          var data3 = await (await item2[((resnum-1)*3)+2].getProperty('innerText')).jsonValue();
+          var data4 = await (await item4[(resnum-1)].getProperty('src')).jsonValue();
+          const nembed = new Discord.MessageEmbed()
+			    .setTitle("BBSレスポンス情報")
+          .setDescription(`> **${data}**${data2}${data3}`)
+          .setFooter({text:data2_2, iconURL:data4});
+          fmsg.edit({embeds:[nembed]});
       //page.close();
-      var pages = await browser.pages();
-      console.log(pages.length);
+          var pages = await browser.pages();
+          console.log(pages.length);
     //});
-    }
-    else{
-      const embed = new Discord.MessageEmbed();
-      embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
-      embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
-      embed.addField("エラーコード", "FOR_BIDDEN", true)
-      embed.setColor("#EB3871")
-      await msg.channel.send({ embeds: [embed] });
-    }
+        /*
+        }
+        else{
+          const embed = new Discord.MessageEmbed();
+          embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+          embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+          embed.addField("エラーコード", "FOR_BIDDEN", true)
+          embed.setColor("#EB3871")
+          await msg.channel.send({ embeds: [embed] });
+        }
+        */
+      }
+      else if (cmd === "scrshot") {
+        if((msg.author.id == 524872647042007067 || msg.author.id == 692980438729228329) && msg.guild.id == 666188622575173652){
+          let scratch;
+          const embed = new Discord.MessageEmbed()
+			      .setTitle("ページのスクリーンショット")
+            .setDescription("撮影中です...");
+          let fmsg = await msg.reply({embeds:[embed], allowedMentions:{repliedUser:false}});
+          await page3.goto(args[1],{waitUntil:"networkidle2"});
+          await page3.screenshot()
+          .then(data => scratch = new Discord.MessageAttachment(data, "screenshot.png"))
+          const nembed = new Discord.MessageEmbed()
+			    .setTitle("ページのスクリーンショット")
+          .setDescription(`${args[1]}`)
+          .setImage("attachment://screenshot.png");
+          fmsg.edit({embeds:[nembed], files:[scratch]});
+      //page.close();
+          var pages = await browser.pages();
+          console.log(pages.length);
+    //});
+        }
+        else{
+          const embed = new Discord.MessageEmbed();
+          embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+          embed.setDescription("あなたにはこのコマンドを実行する権限がありません。\n利用権限が付与されていないか、\nご利用のサーバーでは利用できません。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+          embed.addField("エラーコード", "FOR_BIDDEN", true)
+          embed.setColor("#EB3871")
+          await msg.channel.send({ embeds: [embed] });
+        }
       }
     }
     catch (error) {
       if (error.name !== "") {
-        console.log(`${error.name} : ${error.message}`);
+        console.log(`${error.name} : ${error.message}\n${error.stack}`);
         // await msg.channel.send(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``);
         const embed = new Discord.MessageEmbed()
         embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
-        embed.setDescription(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\`\`\``)
+        embed.setDescription(`エラーが発生しました。\n解決できない場合はスクショを撮って[サポートサーバー](https://discord.gg/VvrBsaq)までご連絡ください。\n\`\`\`${error.name} : ${error.message}\n${error.stack}\`\`\``)
         embed.addField("エラーコード", "CODE_ERROR", true)
         embed.setColor("#FC0341")
         await msg.channel.send({ embeds: [embed] });
