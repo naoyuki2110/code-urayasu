@@ -1,6 +1,6 @@
 // Discordフレームワーク読み込み
 const Discord = require("discord.js");
-const client = new Discord.Client({ intents: Object.keys(Discord.Intents.FLAGS) });
+const client = new Discord.Client({ intents: Object.keys(Discord.Intents.FLAGS) ,partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER']});
 
 // dotenv読み込み
 require("dotenv").config();
@@ -1205,6 +1205,15 @@ Prefixは \`cu!\`
       await msg.channel.send({ embeds: [embed] });
     }
   }
+  const rdumsg = Math.ceil(Math.random()*5000);
+  if(rdumsg === 5000 && !msg.author.bot){
+    msg.channel.send("おめでとうございます！！！　あなたは5000分の1を引き当てたすごい                                                                                                                                                            投稿者です！！！！\nすごい！！！すごすぎます！！");
+    //console.log("ユニークメッセージ発動:乱数500の訪れ");
+  }
+  if(msg.mentions.users.has(client.user.id)){
+    msg.reply({content:"お呼びですか？\n私はCode-Urayasuです。\n何でもお申し付けください。", allowedMentions:{repliedUser:false}});
+    //console.log("ユニークメッセージ発動:乱数500の訪れ");
+  }
 });
 
 let mccpok1 = "30枚";
@@ -2000,18 +2009,28 @@ CubeAvoidなら「ステージ２」や「ステージ１クリア画面」、Co
 });
 
 // ThinkingBoard
-client.on("messageReactionAdd", (reaction, user) => {
+client.on("messageReactionAdd", async (reaction, user) => {
   console.log(`リアクション追加`);
   if (reaction.emoji.name === "\u{1f914}") {
     console.log(`シンキングリアクションの追加\nサーバー : ${reaction.message.guild}\nチャンネル : ${reaction.message.channel}\nユーザー : ${user.tag}\n---------------------`)
     // if(reaction.message.guildId === reaction.message.guild)
     if (reaction.message.guild.channels.cache.find((channel) => channel.name === "cu-thinking-board")) {
+      if(reaction.message.partial){
+        await reaction.fetch();
+      }
+      let atchb = `${reaction.message.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
+      let embdesc = `${reaction.message.content}\n\n---------------\n[Jump to message](${reaction.message.url})`;
+      if(reaction.message.attachments.first()){
+        embdesc = `${reaction.message.content}\n${atchb}\n\n---------------\n[Jump to message](${reaction.message.url})`
+      }
       const embed = new Discord.MessageEmbed()
         .setAuthor({ name: `${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format: "png" }) })
-        .setDescription(`${reaction.message.content}\n\n---------------\n[Jump to message](${reaction.message.url})`)
+        .setDescription(embdesc)
         .setColor("#F5CE0F")
+        
       reaction.message.guild.channels.cache.find((channel) => channel.name === "cu-thinking-board")
         .send({ content: `**ThinkingBoard**\n**TOTAL** : :thinking: **${reaction.count}**`, embeds: [embed] });
+        
     }
     if (!reaction.message.guild.channels.cache.find((channel) => channel.name === "cu-thinking-board")) {
       console.log(`シンキングボードチャンネルが見つからなかったのでボードを生成できませんでした。`)
