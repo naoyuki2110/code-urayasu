@@ -10,3 +10,5 @@ ENV/
 env.bak/
 venv.bak/
 db.sqlite
+sqlite.db
+index-pre.js
