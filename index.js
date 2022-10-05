@@ -88,13 +88,14 @@ client.on("ready", async () => {
   const usshdata = {
     name: "user",
     description: "ユーザーの情報を表示します",
+    options:[{
+      type:"STRING",
+      name:"userid",
+      description:"情報を表示するユーザーのID、またはユーザーメンション",
+    }]
   };
   const svshdata = {
     name: "server",
-    description: "サーバーの情報を表示します",
-  };
-  const svshdata2 = {
-    name: "server2",
     description: "サーバーの情報を表示します",
     options:[{
       type:"STRING",
@@ -105,6 +106,11 @@ client.on("ready", async () => {
   const chshdata = {
     name: "channel",
     description: "チャンネルの情報を表示します",
+    options:[{
+      type:"STRING",
+      name:"channelid",
+      description:"情報を表示するチャンネルのID、またはチャンネルメンション",
+    }]
   };
   const uscmdata = {
     type: "USER",
@@ -112,7 +118,7 @@ client.on("ready", async () => {
     description: "",
   };
   await client.application.commands.set([usshdata, svshdata, chshdata, uscmdata]);
-  await client.application.commands.set([svshdata2], "666188622575173652");
+  await client.application.commands.set([], "666188622575173652");
   console.log(`すべてのアプリケーションコマンドを作成しました。`);
   //console.log(await svpprccdiv.get("pprmccdiv"));
   //console.log(await svpprccdiv.get("pprsccdiv"));
@@ -122,7 +128,7 @@ client.on("ready", async () => {
 client.on("threadCreate", (thre) => {
   console.log(`スレッドチャンネルの作成\nサーバー : ${thre.guild.name} / ${thre.guild.id}\nチャンネル : ${thre.name} / ${thre.id}`)
   if (!thre) {
-    return
+    return;
   }
   else {
     thre.join();
@@ -1205,11 +1211,6 @@ Prefixは \`cu!\`
       await msg.channel.send({ embeds: [embed] });
     }
   }
-  const rdumsg = Math.ceil(Math.random()*5000);
-  if(rdumsg === 5000 && !msg.author.bot){
-    msg.channel.send("おめでとうございます！！！　あなたは5000分の1を引き当てたすごい                                                                                                                                                            投稿者です！！！！\nすごい！！！すごすぎます！！");
-    //console.log("ユニークメッセージ発動:乱数500の訪れ");
-  }
   if(msg.mentions.users.has(client.user.id)){
     msg.reply({content:"お呼びですか？\n私はCode-Urayasuです。\n何でもお申し付けください。", allowedMentions:{repliedUser:false}});
     //console.log("ユニークメッセージ発動:乱数500の訪れ");
@@ -1261,7 +1262,7 @@ client.on("interactionCreate", async (inter) => {
     await inter.reply({ content: `${inter.user.username}さん、こんにちは！`, ephemeral: false });
   }
 
-  if (inter.commandName === "user") {
+  if (inter.commandName === "userold") {
     const date = new Date(inter.user.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const jndate = new Date(inter.member.joinedTimestamp);
@@ -1277,7 +1278,55 @@ client.on("interactionCreate", async (inter) => {
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
   }
-  else if (inter.commandName === "server") {
+  else if (inter.commandName === "user") {
+    if(inter.options.getString("userid") === null){
+      const date = new Date(inter.user.createdTimestamp);
+      const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+      const jndate = new Date(inter.member.joinedTimestamp);
+      const jndatestr = jndate.toFormat("YYYY/MM/DD HH24:MI:SS");
+      const embed = new Discord.MessageEmbed()
+        .setTitle("ユーザー情報")
+        .setThumbnail(inter.user.displayAvatarURL({ format: "png" }))
+        .setFooter({ text: `${datestr}にアカウントが作成されました。` })
+        .addField("ユーザー名", inter.user.username, true)
+        .addField("ユーザータグ", inter.user.discriminator, true)
+        .addField("ユーザーID", `${inter.user.id}`, true)
+        .addField("サーバー参加日時", `${jndatestr}`, true)
+        .setColor("#05E2FF")
+      await inter.reply({ embeds: [embed], ephemeral: false });
+    }
+    else{
+      if(!client.users.cache.get(inter.options.getString("userid").replace(/<|@|!|>/g,""))){
+        const embed = new Discord.MessageEmbed()
+        embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+        embed.setDescription("ユーザーが見つかりませんでした。\nオプションの値を見直してみてください。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+        embed.addField("エラーコード", "NOT_FOUND", true)
+        embed.setColor("#FC0341")
+        await inter.reply({ embeds: [embed] });
+      }
+      else{
+        const embed = new Discord.MessageEmbed()
+        const fetuser = client.users.cache.get(inter.options.getString("userid").replace(/<|@|!|>/g,""));
+        const date = new Date(fetuser.createdTimestamp);
+        const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+        embed.setTitle("ユーザー情報")
+        embed.setThumbnail(fetuser.displayAvatarURL({ format: "png" }))
+        embed.setFooter({ text: `${datestr}にアカウントが作成されました。` })
+        embed.addField("ユーザー名", fetuser.username, true)
+        embed.addField("ユーザータグ", fetuser.discriminator, true)
+        embed.addField("ユーザーID", `${fetuser.id}`, true)
+        //embed.addField("サーバー参加日時", `${jndatestr}`, true)
+        embed.setColor("#05E2FF")
+        if(client.guilds.cache.get(inter.guild.id).members.cache.get(inter.options.getString("userid").replace(/<|@|!|>/g,""))){
+          const jndate = new Date(client.guilds.cache.get(inter.guild.id).members.cache.get(inter.options.getString("userid").replace(/<|@|!|>/g,"")).joinedTimestamp);
+          const jndatestr = jndate.toFormat("YYYY/MM/DD HH24:MI:SS");
+          embed.addField("サーバー参加日時", `${jndatestr}`, true);
+        }
+        await inter.reply({ embeds: [embed], ephemeral: false });
+      }
+    }
+  }
+  else if (inter.commandName === "serverold") {
     const date = new Date(inter.guild.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const embed = new Discord.MessageEmbed()
@@ -1290,7 +1339,7 @@ client.on("interactionCreate", async (inter) => {
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
   }
-  else if (inter.commandName === "server2") {
+  else if (inter.commandName === "server") {
     if(inter.options.getString("serverid") === null){
       const date = new Date(inter.guild.createdTimestamp);
       const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
@@ -1310,7 +1359,7 @@ client.on("interactionCreate", async (inter) => {
         embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
         embed.setDescription("サーバーが見つかりませんでした。\nオプションの値を見直してみてください。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
         embed.addField("エラーコード", "NOT_FOUND", true)
-        embed.setColor("#EB3871")
+        embed.setColor("#FC0341")
         await inter.reply({ embeds: [embed] });
       }
       else{
@@ -1329,7 +1378,7 @@ client.on("interactionCreate", async (inter) => {
       }
     }
   }
-  else if (inter.commandName === "channel") {
+  else if (inter.commandName === "channelold") {
     const date = new Date(inter.channel.createdTimestamp);
     const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
     const embed = new Discord.MessageEmbed()
@@ -1341,6 +1390,45 @@ client.on("interactionCreate", async (inter) => {
       .addField("トピック", `${inter.channel.topic}`, true)
       .setColor("#05E2FF")
     await inter.reply({ embeds: [embed], ephemeral: false });
+  }
+  else if (inter.commandName === "channel") {
+    if(inter.options.getString("channelid") === null){
+      const date = new Date(inter.channel.createdTimestamp);
+      const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+      const embed = new Discord.MessageEmbed()
+        .setTitle("チャンネル情報")
+        .setFooter({ text: `${datestr}にチャンネルが作成されました。` })
+        .addField("チャンネル名", inter.channel.name, true)
+        .addField("チャンネルID", inter.channel.id, true)
+        .addField("メッセージ数", `${inter.channel.messageCount}`, true)
+        .addField("トピック", `${inter.channel.topic}`, true)
+        .setColor("#05E2FF")
+      await inter.reply({ embeds: [embed], ephemeral: false });
+    }
+    else{
+      if(!client.guilds.cache.get(inter.guild.id).channels.cache.get(inter.options.getString("channelid").replace(/<|#|>/g,""))){
+        const embed = new Discord.MessageEmbed()
+        embed.setAuthor({ name: "エラー", iconURL: "https://cdn.discordapp.com/emojis/919045614724079687.png?size=96" })
+        embed.setDescription("チャンネルが見つかりませんでした。\nオプションの値を見直してみてください。\n\nお困りですか？[サポートサーバーまでどうぞ！](https://discord.gg/VvrBsaq)")
+        embed.addField("エラーコード", "NOT_FOUND", true)
+        embed.setColor("#FC0341")
+        await inter.reply({ embeds: [embed] });
+      }
+      else{
+        const fetchnel = client.guilds.cache.get(inter.guild.id).channels.cache.get(inter.options.getString("channelid").replace(/<|#|>/g,""));
+        const date = new Date(fetchnel.createdTimestamp);
+        const datestr = date.toFormat("YYYY/MM/DD HH24:MI:SS");
+        const embed = new Discord.MessageEmbed()
+          .setTitle("チャンネル情報")
+          .setFooter({ text: `${datestr}にチャンネルが作成されました。` })
+          .addField("チャンネル名", fetchnel.name, true)
+          .addField("チャンネルID", fetchnel.id, true)
+          .addField("メッセージ数", `${fetchnel.messageCount}`, true)
+          .addField("トピック", `${fetchnel.topic}`, true)
+          .setColor("#05E2FF")
+        await inter.reply({ embeds: [embed], ephemeral: false });
+      }
+    }
   }
   else if (inter.commandName === "userinfo") {
     const date = new Date(inter.targetUser.createdTimestamp);
@@ -2018,16 +2106,34 @@ client.on("messageReactionAdd", async (reaction, user) => {
       if(reaction.message.partial){
         await reaction.fetch();
       }
-      let atchb = `${reaction.message.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
-      let embdesc = `${reaction.message.content}\n\n---------------\n[Jump to message](${reaction.message.url})`;
-      if(reaction.message.attachments.first()){
-        embdesc = `${reaction.message.content}\n${atchb}\n\n---------------\n[Jump to message](${reaction.message.url})`
-      }
       const embed = new Discord.MessageEmbed()
-        .setAuthor({ name: `${reaction.message.member.displayName}`, iconURL: reaction.message.author.displayAvatarURL({ format: "png" }) })
-        .setDescription(embdesc)
-        .setColor("#F5CE0F")
-        
+      console.log(reaction.message.author.name);
+      let atchb = `${reaction.message.attachments.map(attach => `[${attach.name}](${attach.url})`)}`;
+      let embdesc = `${reaction.message.content}\n\n---------------\n[Jump to message](${reaction.message.url})\n<#${reaction.message.channel.id}> #${reaction.message.channel.name}`;
+      let embauth = "";
+      if(reaction.message.attachments.first()){
+        embdesc = `${reaction.message.content}\n${atchb}\n\n---------------\n[Jump to message](${reaction.message.url})\n<#${reaction.message.channel.id}> #${reaction.message.channel.name}`;
+        if(!reaction.message.attachments.first().spoiler){
+          embed.setImage(reaction.message.attachments.first().url);
+        }
+        if(reaction.message.channel.nsfw){
+          if(reaction.message.guild.channels.cache.find((channel) => channel.name === "cu-thinking-board").nsfw && !reaction.message.attachments.first().spoiler){
+            embed.setImage(reaction.message.attachments.first().url);
+          }
+          else{
+            embed.setImage(null);
+          }
+        }
+      }
+      if(reaction.message.webhookId){
+        embauth = `${reaction.message.author.tag}`;
+      }
+      else{
+        embauth = `${reaction.message.member.displayName}`;
+      }
+      embed.setAuthor({ name: embauth, iconURL: reaction.message.author.displayAvatarURL({ format: "png" }) })
+      embed.setDescription(embdesc)
+      embed.setColor("#F5CE0F")
       reaction.message.guild.channels.cache.find((channel) => channel.name === "cu-thinking-board")
         .send({ content: `**ThinkingBoard**\n**TOTAL** : :thinking: **${reaction.count}**`, embeds: [embed] });
         
