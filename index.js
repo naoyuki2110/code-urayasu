@@ -29,7 +29,7 @@ const vercomps = vercompslib[path.basename(__filename).replace(".js", "")];
 console.log(path.basename(__filename));
 
 // BOTプレフィックス宣言
-const prefix = "cu!";
+const prefix = vercomps.prefix;
 
 // 必要変数
 let slot1 = "";
